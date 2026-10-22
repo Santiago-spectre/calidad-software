@@ -1,0 +1,106 @@
+﻿@model SistemaWebPapeleria.ViewModels.LoginVM;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/auth.css" />
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-left">
+            <img src="~/images/logo1.jpg" alt="Logo" class="login-left-logo" />
+            <h2>Papelería Sonia</h2>
+            <p class="tagline">Sistema Integral de Gestión Comercial</p>
+            <div class="login-feature-grid">
+                <div class="login-feature-card">
+                    <i class="bi bi-cart-fill"></i>
+                    <span>Gestión de Ventas</span>
+                </div>
+                <div class="login-feature-card">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Control de Stock</span>
+                </div>
+                <div class="login-feature-card">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Reportes en Tiempo Real</span>
+                </div>
+                <div class="login-feature-card">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Gestión de Caja</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="card">
+                @if (TempData["SuccessRecover"] != null)
+                {
+                    <div class="alert-success-glass">
+                        <i class="bi bi-check-circle-fill me-2"></i>¡Contraseña restablecida correctamente! Ya puedes iniciar sesión.
+                    </div>
+                }
+
+                <div class="text-center mb-4">
+                    <h4 class="text-white fw-bold text-uppercase login-title">
+                        Iniciar Sesión
+                    </h4>
+                    <p class="login-subtitle mb-1">
+                        Bienvenido a Papelería Sonia
+                    </p>
+                    <div class="d-flex justify-content-center login-logo-wrapper">
+                        <div class="login-logo-circle">
+                            <img src="~/images/logo1.jpg" alt="Logo" class="w-100 login-logo-img" />
+                        </div>
+                    </div>
+                    <p class="login-description mb-0">
+                        Ingrese su correo electrónico y contraseña para iniciar sesión en su cuenta.
+                    </p>
+                </div>
+                <form asp-controller="Login" asp-action="Login" method="post" autocomplete="off">
+                    <div class="mb-3">
+                        <label>Correo Electrónico</label>
+                        <div class="position-relative">
+                            <input class="form-control input-with-icon" type="email" placeholder="Ingrese su correo" required asp-for="Email" />
+                            <i class="bi bi-person-fill input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Contraseña</label>
+                        <div class="position-relative">
+                            <input class="form-control input-with-icon" type="password" id="loginPassword" placeholder="Ingrese su contraseña" required asp-for="Password" />
+                            <i id="toggleLoginPassword" class="bi bi-eye-fill input-icon input-icon-clickable" onclick="togglePassword('loginPassword', this)"></i>
+                        </div>
+                    </div>
+                    <div class="d-grid mb-3">
+                        <button class="btn btn-primary" type="submit">
+                            Iniciar Sesión &nbsp; <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                    @if (ViewData["Mensaje"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewData["Mensaje"]
+                        </div>
+                    }
+                </form>
+
+                <div class="text-center mt-3">
+                    <a href="/login/RecoverPassword" class="login-forgot-link text-decoration-none">
+                        ¿Has olvidado tu contraseña?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+</body>
+</html>

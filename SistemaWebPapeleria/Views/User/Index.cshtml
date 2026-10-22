@@ -1,0 +1,265 @@
+﻿@model List<SistemaWebPapeleria.Models.User>
+@{
+    ViewData["Title"] = "Usuarios";
+    ViewData["Active"] = "User";
+    var userRole = Context.Session.GetString("UserRole");
+}
+
+<partial name="_AlertMessages" />
+<div id="flashBannerContainer"></div>
+
+<!-- TOPBAR -->
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Gestión de usuarios</p>
+        <h4 class="page-title">Usuarios</h4>
+    </div>
+    @if (userRole == "Administrador")
+    {
+        <button onclick="document.getElementById('modalAgregar').style.display='flex'" class="btn-gradient-cta btn-pill-icon">
+            <i class="bi bi-plus-lg"></i> Agregar Usuario
+        </button>
+    }
+</div>
+
+<!-- TABLA -->
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                @if (userRole == "Administrador")
+                {
+                    <th>Acciones</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td class="text-white-13">@user.Name @user.LastName</td>
+                    <td class="text-muted-13">@user.Email</td>
+                    <td>
+                        <span class="pill-badge pill-badge--accent pill-badge--py4">@user.Role?.RoleName</span>
+                    </td>
+                    <td>
+                        @if (user.Status)
+                        {
+                            <span class="pill-badge pill-badge--success pill-badge--py4">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="pill-badge pill-badge--danger pill-badge--py4">Inactivo</span>
+                        }
+                    </td>
+                    @if (userRole == "Administrador")
+                    {
+                        <td>
+                            <div class="row-actions">
+                                <button onclick="abrirEditar(this)"
+                                        data-id="@user.UserId"
+                                        data-nombre="@user.Name"
+                                        data-apellido="@user.LastName"
+                                        data-email="@user.Email"
+                                        data-rol-id="@user.RoleId"
+                                        class="btn-icon-action btn-icon-action--accent">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <form method="post" action="/User/ToggleStatus/@user.UserId" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-icon-action btn-icon-action--warning">
+                                        @if (user.Status)
+                                        {
+                                            <i class="bi bi-eye-slash-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-eye-fill"></i>
+                                        }
+                                    </button>
+                                </form>
+                                <form method="post" action="/User/Delete/@user.UserId" class="m-0" id="formEliminarUser_@user.UserId">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button" onclick="confirmarEliminar('formEliminarUser_@user.UserId', '¿Eliminar este usuario?')" class="btn-icon-action btn-icon-action--danger">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-person-fill empty-state-icon"></i>
+            <p class="empty-state-text">No hay usuarios registrados</p>
+        </div>
+    }
+</div>
+
+<!-- MODAL AGREGAR USUARIO -->
+<div id="modalAgregar" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Agregar Usuario</h5>
+            <button onclick="cerrarModalAgregarUsuario()" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="post" action="/User/Create" id="formCrearUsuario">
+            @Html.AntiForgeryToken()
+            <div id="errorCrearUsuario" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearUsuarioTexto"></span>
+            </div>
+
+            <!-- PASO 1: Correo -->
+            <div id="pasoCorreo" class="form-group-dark">
+                <label class="form-label-dark">Email</label>
+                <div class="input-group-inline">
+                    <input type="email" name="Email" id="inputEmailCrear" required placeholder="Ej: juan@correo.com" class="form-input-dark flex-fill" />
+                    <button type="button" onclick="enviarCodigoCrearUsuario()" id="btnVerificarCorreo" class="btn-gradient-cta btn-inline-action">
+                        Verificar
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 2: Código (oculto hasta enviar) -->
+            <div id="pasoCodigo" class="d-none form-group-dark">
+                <label class="form-label-dark">Código de verificación</label>
+                <div class="input-group-inline">
+                    <input type="text" id="inputCodigoCrear" maxlength="6" placeholder="6 dígitos" class="form-input-dark flex-fill" />
+                    <button type="button" onclick="confirmarCodigoCrearUsuario()" class="btn-gradient-success btn-inline-action">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 3: Resto de campos (oculto hasta verificar) -->
+            <div id="pasoDatos" class="d-none">
+                <div class="form-grid-2">
+                    <div>
+                        <label class="form-label-dark">Nombre</label>
+                        <input type="text" name="Name" required placeholder="Ej: Juan" class="form-input-dark" />
+                    </div>
+                    <div>
+                        <label class="form-label-dark">Apellido</label>
+                        <input type="text" name="LastName" required placeholder="Ej: Pérez" class="form-input-dark" />
+                    </div>
+                </div>
+                <div class="form-group-dark">
+                    <label class="form-label-dark">Contraseña</label>
+                    <div class="input-group-relative">
+                        <input type="password" name="Password" id="crearPassword" required placeholder="Contraseña" class="form-input-dark form-input-dark--icon" />
+                        <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('crearPassword', this)"></i>
+                    </div>
+                </div>
+                <div class="form-group-dark">
+                    <label class="form-label-dark">Repetir contraseña</label>
+                    <div class="input-group-relative">
+                        <input type="password" id="crearConfirmPassword" required placeholder="Repite la contraseña" class="form-input-dark form-input-dark--icon" />
+                        <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('crearConfirmPassword', this)"></i>
+                    </div>
+                </div>
+                <div class="form-group-dark">
+                    <label class="form-label-dark">Rol</label>
+                    <select name="RoleId" required class="form-input-dark">
+                        <option value="">-- Seleccionar rol --</option>
+                        @foreach (var role in ViewBag.Roles ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>())
+                        {
+                            <option value="@role.Value">@role.Text</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn-gradient-cta btn-block-lg mt-10">
+                    <i class="bi bi-check-lg"></i> Guardar Usuario
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR USUARIO -->
+<div id="modalEditar" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Editar Usuario</h5>
+            <button onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" action="/User/Edit" id="formEditarUsuario">
+            @Html.AntiForgeryToken()
+            <div id="errorEditarUsuario" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorEditarUsuarioTexto"></span>
+            </div>
+            <input type="hidden" name="UserId" id="editUserId" />
+            <div class="form-grid-2">
+                <div>
+                    <label class="form-label-dark">Nombre</label>
+                    <input type="text" name="Name" id="editName" required class="form-input-dark" />
+                </div>
+                <div>
+                    <label class="form-label-dark">Apellido</label>
+                    <input type="text" name="LastName" id="editLastName" required class="form-input-dark" />
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Email</label>
+                <div class="input-group-inline">
+                    <input type="email" name="Email" id="editEmail" required oninput="onEditEmailChange()" class="form-input-dark flex-fill" />
+                    <button type="button" id="btnVerificarEditEmail" onclick="enviarCodigoEditarUsuario()" class="d-none btn-gradient-cta btn-inline-action">
+                        Verificar
+                    </button>
+                </div>
+            </div>
+            <div id="pasoCodigoEditar" class="d-none form-group-dark">
+                <label class="form-label-dark">Código de verificación</label>
+                <div class="input-group-inline">
+                    <input type="text" id="inputCodigoEditar" maxlength="6" placeholder="6 dígitos" class="form-input-dark flex-fill" />
+                    <button type="button" onclick="confirmarCodigoEditarUsuario()" class="btn-gradient-success btn-inline-action">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nueva Contraseña <span class="text-muted-11">(dejar vacío para no cambiar)</span></label>
+                <div class="input-group-relative">
+                    <input type="password" name="Password" id="editPassword" placeholder="Nueva contraseña" class="form-input-dark form-input-dark--icon" />
+                    <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('editPassword', this)"></i>
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Repetir contraseña</label>
+                <div class="input-group-relative">
+                    <input type="password" id="editConfirmPassword" placeholder="Repite la nueva contraseña" class="form-input-dark form-input-dark--icon" />
+                    <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('editConfirmPassword', this)"></i>
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Rol</label>
+                <select name="RoleId" id="editRoleId" required class="form-input-dark">
+                    <option value="">-- Seleccionar rol --</option>
+                    @foreach (var role in ViewBag.Roles ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>())
+                    {
+                        <option value="@role.Value">@role.Text</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" id="btnGuardarEdicion" class="btn-gradient-cta btn-block-lg mt-10">
+                <i class="bi bi-check-lg"></i> Guardar Cambios
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/user.js"></script>
+}

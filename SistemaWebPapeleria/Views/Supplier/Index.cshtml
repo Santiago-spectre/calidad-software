@@ -1,0 +1,175 @@
+﻿@model List<SistemaWebPapeleria.Models.Supplier>
+@{
+    ViewData["Title"] = "Proveedores";
+    ViewData["Active"] = "Supplier";
+}
+
+<partial name="_AlertMessages" />
+<div id="flashBannerContainer"></div>
+
+<!-- TOPBAR -->
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Gestión de proveedores</p>
+        <h4 class="page-title">Proveedores</h4>
+    </div>
+    <button onclick="document.getElementById('modalAgregar').style.display='flex'" class="btn-gradient-cta btn-pill-icon">
+        <i class="bi bi-plus-lg"></i> Agregar Proveedor
+    </button>
+</div>
+
+<!-- TABLA -->
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="6" class="table-empty-cell">
+                        <i class="bi bi-truck table-empty-icon"></i>
+                        No hay proveedores registrados aún
+                    </td>
+                </tr>
+            }
+            @foreach (var supplier in Model)
+            {
+                <tr>
+                    <td class="text-muted-13-dim">#@supplier.SupplierId</td>
+                    <td class="text-white-13">@supplier.Name</td>
+                    <td class="text-muted-13">@supplier.Phone</td>
+                    <td class="text-muted-13">@supplier.Address</td>
+                    <td>
+                        @if (supplier.Status)
+                        {
+                            <span class="pill-badge pill-badge--success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="pill-badge pill-badge--danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button onclick="abrirEditar(this)"
+                                    data-id="@supplier.SupplierId"
+                                    data-nombre="@supplier.Name"
+                                    data-telefono="@supplier.Phone"
+                                    data-direccion="@supplier.Address"
+                                    data-descripcion="@supplier.Description"
+                                    class="btn-icon-action btn-icon-action--accent">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <form method="post" action="/Supplier/ToggleStatus/@supplier.SupplierId" class="m-0">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-icon-action btn-icon-action--danger">
+                                    @if (supplier.Status)
+                                    {
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-eye-fill"></i>
+                                    }
+                                </button>
+                            </form>
+                            <form method="post" action="/Supplier/Delete/@supplier.SupplierId" class="m-0" id="formEliminarSupplier_@supplier.SupplierId">
+                                @Html.AntiForgeryToken()
+                                <button type="button" onclick="confirmarEliminar('formEliminarSupplier_@supplier.SupplierId', '¿Eliminar este proveedor?')" class="btn-icon-action btn-icon-action--danger">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MODAL AGREGAR -->
+<div id="modalAgregar" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Agregar Proveedor</h5>
+            <button onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formCrearProveedor">
+            @Html.AntiForgeryToken()
+            <div id="errorCrearProveedor" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearProveedorTexto"></span>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre</label>
+                <input type="text" name="Name" required placeholder="Nombre del proveedor" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Teléfono</label>
+                <input type="text" name="Phone" required placeholder="Ej: 987654321" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Dirección</label>
+                <input type="text" name="Address" required placeholder="Dirección del proveedor" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (Opcional)</label>
+                <input type="text" name="Description" placeholder="Descripción del proveedor" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-check-lg"></i> Guardar Proveedor
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div id="modalEditar" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Editar Proveedor</h5>
+            <button onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formEditar">
+            @Html.AntiForgeryToken()
+            <div id="errorEditarProveedor" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorEditarProveedorTexto"></span>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre</label>
+                <input type="text" name="Name" id="editNombre" required class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Teléfono</label>
+                <input type="text" name="Phone" id="editTelefono" required class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Dirección</label>
+                <input type="text" name="Address" id="editDireccion" required class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (Opcional)</label>
+                <input type="text" name="Description" id="editDescripcion" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-check-lg"></i> Actualizar Proveedor
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/supplier.js"></script>
+}

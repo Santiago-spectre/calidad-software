@@ -1,0 +1,26 @@
+﻿/* cashclosing.css — estilos específicos de la vista de caja */
+
+.status-chip {
+    background: rgba(52,211,153,0.15);
+    color: var(--color-success);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-dot {
+    font-size: 8px;
+    margin-right: 6px;
+}
+
+.btn-outline-warning-sm {
+    background: rgba(251,191,36,0.15);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 8px;
+    color: var(--color-warning);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    cursor: pointer;
+}

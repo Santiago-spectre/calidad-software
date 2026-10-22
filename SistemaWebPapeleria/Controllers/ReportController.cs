@@ -1,0 +1,383 @@
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SistemaWebPapeleria.Data;
+using SistemaWebPapeleria.Helpers;
+using SistemaWebPapeleria.Models;
+using SistemaWebPapeleria.Services;
+using SistemaWebPapeleria.ViewModels;
+
+namespace SistemaWebPapeleria.Controllers
+{
+    public class ReportController : Controller
+    {
+        private readonly AppDbContext _context;
+        private readonly IConverter _converter;
+        private readonly ViewRenderService _viewRender;
+
+        public ReportController(AppDbContext context, IConverter converter, ViewRenderService viewRender)
+        {
+            _context = context;
+            _converter = converter;
+            _viewRender = viewRender;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userId = int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+            var hoy = DateTime.Today;
+
+            List<Sale> sales;
+            if (userRole == "Vendedor")
+            {
+                sales = await _context.Sales
+                    .Include(s => s.User)
+                    .Where(s => s.UserId == userId)
+                    .OrderByDescending(s => s.Date)
+                    .ToListAsync();
+            }
+            else
+            {
+                sales = await _context.Sales
+                    .Include(s => s.User)
+                    .OrderByDescending(s => s.Date)
+                    .ToListAsync();
+            }
+
+            // Lista de vendedores para el filtro (solo admin)
+            ViewBag.Users = await _context.Users
+                .Where(u => u.Status)
+                .ToListAsync();
+
+            // Meses con ventas para informes mensuales
+            var monthlyGroups = sales
+                .GroupBy(s => new { s.Date.Year, s.Date.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    MonthName = new System.Globalization.CultureInfo("es-PE").DateTimeFormat.GetMonthName(g.Key.Month),
+                    Total = g.Sum(s => s.Total),
+                    Count = g.Count()
+                })
+                .OrderByDescending(g => g.Year)
+                .ThenByDescending(g => g.Month)
+                .ToList();
+
+            ViewBag.MonthlyGroups = monthlyGroups;
+
+            // ── Reporte del día ──
+            if (userRole == "Administrador")
+            {
+                var usuarios = await _context.Users
+                    .Where(u => u.Status)
+                    .ToListAsync();
+
+                var reporteHoy = usuarios.Select(u => new
+                {
+                    UserId = u.UserId,
+                    NombreCompleto = u.Name + " " + u.LastName,
+                    TotalVentas = sales.Where(s => s.UserId == u.UserId && s.Date.Date == hoy).Sum(s => s.Total),
+                    NumVentas = sales.Count(s => s.UserId == u.UserId && s.Date.Date == hoy)
+                }).ToList();
+
+                // Cajas cerradas hoy por usuario
+                // Cajas cerradas hoy por usuario
+                var cajasCerradasHoy = await _context.CashClosings
+                    .Where(c => c.Date.Date == hoy && (c.ClosingAmount != 0 || c.TotalSales != 0))
+                    .Select(c => c.UserId)
+                    .ToListAsync();
+
+                ViewBag.CajasCerradasHoy = cajasCerradasHoy;
+                ViewBag.ReporteHoy = reporteHoy;
+
+                // El cierre general solo se habilita si TODOS los usuarios activos ya cerraron su caja hoy
+                ViewBag.TodasCajasCerradasHoy = usuarios.Count > 0 && usuarios.All(u => cajasCerradasHoy.Contains(u.UserId));
+
+                // Historial últimos 7 días por usuario
+                var cajasUltimos7 = await _context.CashClosings
+                    .Include(c => c.User)
+                    .Where(c => c.Date.Date >= hoy.AddDays(-6) && c.Date.Date <= hoy && (c.ClosingAmount != 0 || c.TotalSales != 0))
+                    .OrderByDescending(c => c.Date)
+                    .ToListAsync();
+
+                ViewBag.Historial7 = cajasUltimos7;
+            }
+            else
+            {
+                var reporteHoy = new[]
+                {
+                    new
+                    {
+                        UserId = userId,
+                        NombreCompleto = "",
+                        TotalVentas = sales.Where(s => s.Date.Date == hoy).Sum(s => s.Total),
+                        NumVentas = sales.Count(s => s.Date.Date == hoy)
+                    }
+                }.ToList();
+
+                var cajaCerradaHoy = await _context.CashClosings
+                    .AnyAsync(c => c.UserId == userId && c.Date.Date == hoy && (c.ClosingAmount != 0 || c.TotalSales != 0));
+
+                ViewBag.CajaCerradaHoy = cajaCerradaHoy;
+                ViewBag.ReporteHoy = reporteHoy;
+
+                var cajasUltimos7Vendedor = await _context.CashClosings
+                    .Include(c => c.User)
+                    .Where(c => c.UserId == userId && c.Date.Date >= hoy.AddDays(-6) && c.Date.Date <= hoy && (c.ClosingAmount != 0 || c.TotalSales != 0))
+                    .OrderByDescending(c => c.Date)
+                    .ToListAsync();
+
+                ViewBag.Historial7 = cajasUltimos7Vendedor;
+            }
+
+            return View(sales);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerarComprobante(int id)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userId = int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+
+            var sale = await _context.Sales
+                .Include(s => s.User)
+                .Include(s => s.Receipt)
+                .Include(s => s.SaleDetails)
+                    .ThenInclude(sd => sd.Product)
+                .Include(s => s.Returns)
+                    .ThenInclude(r => r.ReturnDetails)
+                        .ThenInclude(rd => rd.Product)
+                .FirstOrDefaultAsync(s => s.SaleId == id);
+
+            if (sale == null) return NotFound();
+
+            if (userRole != "Administrador" && sale.UserId != userId)
+                return StatusCode(403);
+
+            // Construir el HTML del comprobante
+            var html = await _viewRender.RenderToStringAsync("~/Views/PDF/Comprobante.cshtml", sale);
+
+            var pdf = _converter.Convert(new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A5,
+                },
+                Objects = {
+                    new ObjectSettings {
+                        HtmlContent = html,
+                        WebSettings = { DefaultEncoding = "utf-8" }
+                    }
+                }
+            });
+
+            //Registrar comprobante en BD si no existe
+            if (sale.Receipt == null)
+            {
+                var receipt = new Receipt
+                {
+                    SaleId = sale.SaleId,
+                    IssueDate = DateTimeHelper.AhoraEnPeru(),
+                    Observations = ""
+                };
+                _context.Receipts.Add(receipt);
+                sale.ReceiptIssued = true;
+                await _context.SaveChangesAsync();
+            }
+
+            return File(pdf, "application/pdf", $"Comprobante-{sale.SaleId}.pdf");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerarReporteMensual(int mes, int anio)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userId = int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+
+            var query = _context.Sales
+                .Include(s => s.User)
+                .Where(s => s.Date.Month == mes && s.Date.Year == anio);
+
+            if (userRole == "Vendedor")
+                query = query.Where(s => s.UserId == userId);
+
+            var sales = await query.OrderBy(s => s.Date).ToListAsync();
+
+            var nombreMes = new System.Globalization.CultureInfo("es-PE").DateTimeFormat.GetMonthName(mes);
+
+            var reporteVM = new ReporteMensualVM
+            {
+                MonthName = char.ToUpper(nombreMes[0]) + nombreMes.Substring(1),
+                Year = anio,
+                Sales = sales
+            };
+
+            var html = await _viewRender.RenderToStringAsync("~/Views/PDF/ReporteMensual.cshtml", reporteVM);
+
+            var pdf = _converter.Convert(new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                },
+                Objects = {
+                    new ObjectSettings {
+                        HtmlContent = html,
+                        WebSettings = { DefaultEncoding = "utf-8" }
+                    }
+                }
+            });
+
+            // Notificar que se descargó el reporte
+            await NotificationHelper.CrearAsync(_context, userId,
+                "Reporte descargado",
+                $"Se descargó el reporte de ventas de {reporteVM.MonthName} {anio}.",
+                "Reporte");
+
+            if (userRole != "Administrador")
+            {
+                var admins = await _context.Users
+                    .Where(u => u.Role.RoleName == "Administrador" && u.UserId != userId)
+                    .ToListAsync();
+
+                foreach (var admin in admins)
+                {
+                    await NotificationHelper.CrearAsync(_context, admin.UserId,
+                        "Reporte descargado",
+                        $"Se descargó el reporte de ventas de {reporteVM.MonthName} {anio}.",
+                        "Reporte");
+                }
+            }
+
+            return File(pdf, "application/pdf", $"Reporte-{mes}-{anio}.pdf");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerarReporteDiario(DateTime fecha, int? vendedorId = null)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var sessionUserId = int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+
+            // Un Vendedor jamas puede pedir el reporte de otro vendedor
+            if (userRole == "Vendedor" && vendedorId.HasValue && vendedorId.Value != sessionUserId)
+                return StatusCode(403);
+
+            var query = _context.Sales
+                .Include(s => s.User)
+                .Where(s => s.Date.Date == fecha.Date);
+
+            if (userRole == "Vendedor")
+            {
+                // Un vendedor siempre ve solo sus propias ventas, sin importar que le pasen
+                query = query.Where(s => s.UserId == sessionUserId);
+            }
+            else if (vendedorId.HasValue)
+            {
+                // Admin pidiendo el reporte de UN vendedor especifico (boton por fila)
+                query = query.Where(s => s.UserId == vendedorId.Value);
+            }
+            // Si es Admin y vendedorId es null -> trae TODAS las ventas del dia (cierre general)
+
+            var sales = await query.OrderBy(s => s.Date).ToListAsync();
+
+            var reporteVM = new ReporteDiarioVM
+            {
+                Date = fecha.Date,
+                Sales = sales
+            };
+
+            var html = await _viewRender.RenderToStringAsync("~/Views/PDF/ReporteDiario.cshtml", reporteVM);
+
+            var pdf = _converter.Convert(new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                },
+                Objects = {
+                    new ObjectSettings {
+                        HtmlContent = html,
+                        WebSettings = { DefaultEncoding = "utf-8" }
+                    }
+                }
+            });
+
+            await NotificationHelper.CrearAsync(_context, sessionUserId,
+                "Reporte descargado",
+                $"Se descargó el reporte de ventas del día {fecha.Date:dd/MM/yyyy}.",
+                "Reporte");
+
+            if (userRole != "Administrador")
+            {
+                var admins = await _context.Users
+                    .Where(u => u.Role.RoleName == "Administrador" && u.UserId != sessionUserId)
+                    .ToListAsync();
+
+                foreach (var admin in admins)
+                {
+                    await NotificationHelper.CrearAsync(_context, admin.UserId,
+                        "Reporte descargado",
+                        $"Se descargó el reporte de ventas del día {fecha.Date:dd/MM/yyyy}.",
+                        "Reporte");
+                }
+            }
+
+            return File(pdf, "application/pdf", $"Reporte-Diario-{fecha:yyyy-MM-dd}.pdf");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSaleDetail(int id)
+        {
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var userId = int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+
+            var sale = await _context.Sales
+                .Include(s => s.SaleDetails)
+                    .ThenInclude(sd => sd.Product)
+                .FirstOrDefaultAsync(s => s.SaleId == id);
+
+            if (sale == null) return NotFound();
+
+            if (userRole != "Administrador" && sale.UserId != userId)
+                return StatusCode(403);
+
+            var items = new List<object>();
+            foreach (var d in sale.SaleDetails)
+            {
+                var devuelto = await _context.ReturnDetails
+                    .Where(rd => rd.ProductId == d.ProductId && rd.Return.SaleId == sale.SaleId)
+                    .SumAsync(rd => (int?)rd.Quantity) ?? 0;
+
+                items.Add(new
+                {
+                    ProductId = d.ProductId,
+                    producto = d.Product?.Name,
+                    cantidad = d.Quantity,
+                    devuelto = devuelto,
+                    disponibleDevolucion = d.Quantity - devuelto,
+                    precioUnitario = d.UnitPrice,
+                    subtotal = d.Subtotal
+                });
+            }
+
+            var detalle = new
+            {
+                saleId = sale.SaleId,
+                fecha = sale.Date.ToString("dd/MM/yyyy HH:mm"),
+                paymentMethod = sale.PaymentMethod,
+                discount = sale.Discount,
+                total = sale.Total,
+                items = items
+            };
+
+            return Json(detalle);
+        }
+    }
+}

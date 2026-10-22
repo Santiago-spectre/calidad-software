@@ -1,0 +1,169 @@
+﻿@model List<SistemaWebPapeleria.Models.Sale>
+@{
+    ViewData["Title"] = "Ventas";
+    ViewData["Active"] = "Sale";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/sale.css" />
+}
+
+<!-- Filtro admin-->
+@if (ViewBag.UserRole == "Administrador")
+{
+    <div class="filter-end-row mb-15">
+        <select id="filtroUsuarioVentas" onchange="aplicarFiltroVentas()" class="control-plain">
+            <option value="">Todos</option>
+            @foreach (var user in ViewBag.Usuarios)
+            {
+                <option value="@user.UserId">@user.Name @user.LastName</option>
+            }
+        </select>
+    </div>
+}
+
+<!-- TARJETAS -->
+<div class="stats-grid-3 mb-25">
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Ventas de Hoy</p>
+                <h3 id="statTodaySales" class="stat-value text-success-c">@ViewBag.TodaySales</h3>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-cart-check-fill stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Ventas Totales Mensuales</p>
+                <h3 id="statTotalSales" class="stat-value text-success-c">@ViewBag.TotalSales</h3>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-calendar-month stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Promedio de Ventas</p>
+                <h3 id="statAverageSales" class="stat-value text-success-c">@ViewBag.AverageSales</h3>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-graph-up stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pos-wrapper">
+
+    <!-- ══ IZQUIERDA: Catálogo ══ -->
+    <div class="pos-left">
+        <div class="pos-catalog-card">
+
+            <!-- Buscador -->
+            <div class="pos-search">
+                <input type="text" id="buscarProducto" placeholder="🔍  Buscar producto..." oninput="filtrarProductos()" />
+            </div>
+
+            <!-- Grid de productos -->
+            <div class="pos-grid" id="posGrid"></div>
+
+            <!-- Paginación -->
+            <div id="paginacionPos" class="pos-pagination"></div>
+        </div>
+    </div>
+
+    <!-- ══ DERECHA: Carrito + Pago ══ -->
+    <div class="pos-right">
+
+        <div class="pos-cart-header">
+            <h6><i class="bi bi-cart3 mr-6"></i>Venta actual</h6>
+        </div>
+
+        <!-- Lista de productos seleccionados -->
+        <div class="pos-cart-list" id="cartList">
+            <div class="cart-empty" id="cartEmpty">
+                <i class="bi bi-bag-x"></i>
+                Selecciona productos del catálogo
+            </div>
+        </div>
+
+        <!-- Panel inferior -->
+        <div class="pos-footer">
+
+            <!-- Método de pago -->
+            <div class="pos-footer-row">
+                <span class="pos-footer-label">Método de pago</span>
+            </div>
+            <select id="metodoPago">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Yape">Yape</option>
+                <option value="Plin">Plin</option>
+                <option value="Tarjeta">Tarjeta</option>
+            </select>
+
+            <!-- Descuento -->
+            <div class="pos-footer-row mt-4">
+                <span class="pos-footer-label">Descuento (S/)</span>
+            </div>
+            <input type="number" id="descuento" min="0" step="0.01" value="0" oninput="actualizarTotales()" />
+
+            <!-- Comprobante -->
+            <label>
+                <input type="checkbox" id="emitirComprobante" class="pos-checkbox" />
+                Emitir comprobante
+            </label>
+
+            <!-- Op. Gravada e IGV -->
+            <div class="igv-row">
+                <div class="pos-footer-row">
+                    <span class="pos-footer-label">OP. GRAVADA</span>
+                    <span class="pos-footer-value" id="opGravada">S/ 0.00</span>
+                </div>
+                <div class="pos-footer-row mt-4">
+                    <span class="pos-footer-label">IGV (18%)</span>
+                    <span class="pos-footer-value" id="igvMonto">S/ 0.00</span>
+                </div>
+            </div>
+
+            <!-- Botón PAGAR -->
+            <button class="btn-pagar" id="btnPagar" onclick="registrarVenta()" disabled>
+                <span>PAGAR</span>
+                <span id="totalVenta">S/ 0.00</span>
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CAJA NO ABIERTA -->
+<div id="modalCajaVentas" class="pos-modal-overlay">
+    <div class="pos-modal-card">
+        <div class="pos-modal-icon-circle">
+            <i class="bi bi-cash-stack text-warning-c fs-32"></i>
+        </div>
+        <h4 class="pos-modal-title">Caja no aperturada</h4>
+        <p class="pos-modal-text">
+            No has aperturado la caja del día de hoy.<br>
+            Debes abrirla antes de registrar ventas.
+        </p>
+        <a href="/CashClosing/Index" class="btn-gradient-cta btn-link-block">
+            <i class="bi bi-unlock-fill"></i> Ir a Caja General
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const productos = @Html.Raw(ViewBag.ProductosJson ?? "[]");
+    </script>
+    <script src="~/js/sale.js"></script>
+}

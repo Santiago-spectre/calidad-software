@@ -1,0 +1,492 @@
+﻿@model List<SistemaWebPapeleria.Models.Product>
+@{
+    ViewData["Title"] = "Productos";
+    ViewData["Active"] = "Product";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/product.css" />
+}
+
+<partial name="_AlertMessages" />
+<div id="flashBannerContainer"></div>
+
+<!-- TOPBAR -->
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Gestión de inventario</p>
+        <h4 class="page-title">Productos</h4>
+    </div>
+    <div class="page-actions">
+        <button onclick="document.getElementById('modalAgregar').style.display='flex'" class="btn-gradient-cta btn-pill-icon">
+            <i class="bi bi-plus-lg"></i> Agregar Producto
+        </button>
+        <button onclick="document.getElementById('modalAgregarServicio').style.display='flex'" class="btn-gradient-teal btn-pill-icon">
+            <i class="bi bi-plus-lg"></i> Agregar Servicio
+        </button>
+    </div>
+</div>
+
+<!-- TARJETAS -->
+<div class="stats-grid-3 mb-25">
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Total Productos</p>
+                <h3 class="stat-value text-success-c">@ViewBag.TotalProducts</h3>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-box-seam-fill stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Stock Bajo</p>
+                <h3 class="stat-value text-warning-c">@ViewBag.LowStock</h3>
+            </div>
+            <div class="icon-box icon-box--warning">
+                <i class="bi bi-exclamation-triangle-fill stat-icon text-warning-c"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Agotados</p>
+                <h3 class="stat-value text-danger-c">@ViewBag.OutOfStock</h3>
+            </div>
+            <div class="icon-box icon-box--danger">
+                <i class="bi bi-x-circle-fill stat-icon text-danger-c"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BARRA DE BÚSQUEDA -->
+<div class="search-bar-row">
+    <input type="text" id="searchInput" placeholder=" Buscar Producto..." class="control-glow search-input-dark" />
+    <select id="filterTipo" class="control-glow">
+        <option value="">Todos los tipos</option>
+        <option value="Producto">Producto</option>
+        <option value="Servicio">Servicio</option>
+    </select>
+    <select id="filterEstado" class="control-glow">
+        <option value="">Todos los estados</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+    </select>
+</div>
+
+<!-- Tabla + categorias-->
+<div class="products-categories-grid">
+
+    <!-- TABLA DE PRODUCTOS -->
+    <div class="data-panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                    <th>Precio Venta</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7" class="table-empty-cell">
+                            <i class="bi bi-box-seam table-empty-icon"></i>
+                            No hay productos registrados aún
+                        </td>
+                    </tr>
+                }
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td class="text-white-13">@product.Name</td>
+                        <td class="text-muted-13">@product.Category?.Name</td>
+                        <td>
+                            @if (product.IsService)
+                            {
+                                <span class="pill-badge pill-badge--accent">Servicio</span>
+                            }
+                            else
+                            {
+                                <span class="pill-badge pill-badge--success">Producto</span>
+                            }
+                        </td>
+                        <td class="text-success-13-bold">S/ @product.SalePrice</td>
+                        <td>
+                            @if (!product.IsService && product.Stock <= product.MinimumStock)
+                            {
+                                <span class="badge-low">⚠ @product.Stock unid.</span>
+                            }
+                            else if (product.IsService)
+                            {
+                                <span class="text-muted-13-light">-</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted-13">@product.Stock unid.</span>
+                            }
+                        </td>
+                        <td>
+                            @if (product.IsActive)
+                            {
+                                <span class="pill-badge pill-badge--success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="pill-badge pill-badge--danger">Inactivo</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                <button onclick="abrirEditarProducto(this)"
+                                        data-id="@product.ProductId"
+                                        data-nombre="@product.Name"
+                                        data-descripcion="@product.Description"
+                                        data-precio-venta="@product.SalePrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-precio-compra="@product.PurchasePrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-stock="@product.Stock"
+                                        data-stock-minimo="@product.MinimumStock"
+                                        data-es-servicio="@product.IsService.ToString().ToLower()"
+                                        data-categoria-id="@product.CategoryId"
+                                        data-proveedor-id="@(product.SupplierId.HasValue ? product.SupplierId.ToString() : "")"
+                                        class="btn-icon-action btn-icon-action--accent">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <form method="post" action="/Product/ToggleStatus/@product.ProductId" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-icon-action btn-icon-action--muted">
+                                        @if (product.IsActive)
+                                        {
+                                            <i class="bi bi-eye-slash-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-eye-fill"></i>
+                                        }
+                                    </button>
+                                </form>
+                                <form method="post" action="/Product/Delete/@product.ProductId" class="m-0" id="formEliminar_@product.ProductId">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button" onclick="confirmarEliminar('formEliminar_@product.ProductId')" class="btn-icon-action btn-icon-action--danger">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="paginacion" class="pagination-row"></div>
+    </div>
+
+    <!-- Tarjeta de categorias derecha -->
+    <div class="categories-panel">
+        <div class="categories-panel-header">
+            <div class="categories-panel-title-group">
+                <div class="categories-icon-box">
+                    <i class="bi bi-tags-fill categories-icon"></i>
+                </div>
+                <p class="categories-eyebrow">Categorías</p>
+            </div>
+            <button onclick="document.getElementById('modalNuevaCategoria').style.display='flex'" class="btn-gradient-cta btn-pill-sm">
+                <i class="bi bi-plus-lg"></i> Nueva
+            </button>
+        </div>
+
+        <!-- Lista de categorias -->
+        <div class="categories-list-scroll">
+            <div class="categories-list-header">
+                <span class="cat-col-id">ID</span>
+                <span class="cat-col-name">Nombre</span>
+                <span class="cat-col-actions">Acciones</span>
+            </div>
+            @if (ViewBag.CategoriasList.Count == 0)
+            {
+                <p class="categories-empty">Sin categorías aún</p>
+            }
+            else
+            {
+                @foreach (var cat in ViewBag.CategoriasList)
+                {
+                    <div class="cat-item">
+                        <span class="cat-item-id">#@cat.CategoryId</span>
+                        <span class="cat-item-name">@cat.Name</span>
+                        <div class="cat-item-actions">
+                            <button onclick="abrirEditarCategoria(this)"
+                                    data-id="@cat.CategoryId"
+                                    data-nombre="@cat.Name"
+                                    data-descripcion="@cat.Description"
+                                    class="btn-icon-xs btn-icon-xs--accent">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <form method="post" action="/Category/Delete/@cat.CategoryId" class="m-0" id="formEliminarCat_@cat.CategoryId">
+                                @Html.AntiForgeryToken()
+                                <button type="button" onclick="confirmarEliminar('formEliminarCat_@cat.CategoryId', '¿Eliminar esta categoría?')" class="btn-icon-xs btn-icon-xs--danger">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+            <div id="paginacionCats" class="pagination-row-wrap"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR PRODUCTO -->
+<div id="modalAgregar" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Agregar Producto</h5>
+            <button onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formCrearProducto">
+            @Html.AntiForgeryToken()
+            <div id="errorCrearProducto" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearProductoTexto"></span>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre del producto</label>
+                <input type="text" name="Name" required placeholder="Ej: Cuaderno A4" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (opcional)</label>
+                <input type="text" name="Description" placeholder="Descripción del producto" class="form-input-dark" />
+            </div>
+            <div class="form-grid-2">
+                <div>
+                    <label class="form-label-dark">Precio venta (S/)</label>
+                    <input type="number" name="SalePrice" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+                </div>
+                <div id="precioCompraField">
+                    <label class="form-label-dark">Precio compra (S/)</label>
+                    <input type="number" name="PurchasePrice" step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+                </div>
+            </div>
+            <div id="stockField" class="form-grid-2">
+                <div>
+                    <label class="form-label-dark">Stock inicial</label>
+                    <input type="number" name="Stock" min="0" placeholder="0" class="form-input-dark" />
+                </div>
+                <div>
+                    <label class="form-label-dark">Stock mínimo (alerta)</label>
+                    <input type="number" name="MinimumStock" min="0" value="5" class="form-input-dark" />
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Categoría</label>
+                <select name="CategoryId" required class="form-input-dark">
+                    <option value="">-- Seleccionar categoría --</option>
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        <option value="@cat.Value">@cat.Text</option>
+                    }
+                </select>
+            </div>
+            <div id="proveedorField" class="form-group-dark">
+                <label class="form-label-dark">Proveedor (opcional)</label>
+                <select name="SupplierId" class="form-input-dark">
+                    <option value="">-- Sin proveedor --</option>
+                    @foreach (var sup in ViewBag.Suppliers)
+                    {
+                        <option value="@sup.Value">@sup.Text</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg mt-10">
+                <i class="bi bi-check-lg"></i> Guardar Producto
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR SERVICIO -->
+<div id="modalAgregarServicio" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Agregar Servicio</h5>
+            <button onclick="document.getElementById('modalAgregarServicio').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formCrearServicio">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="IsService" value="true" />
+            <div id="errorCrearServicio" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearServicioTexto"></span>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre del servicio</label>
+                <input type="text" name="Name" required placeholder="Ej: Impresiones color" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (opcional)</label>
+                <input type="text" name="Description" placeholder="Descripción del servicio" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Precio venta (S/)</label>
+                <input type="number" name="SalePrice" required step="0.01" min="0.01" placeholder="0.00" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Categoría</label>
+                <select name="CategoryId" required class="form-input-dark">
+                    <option value="">-- Seleccionar categoría --</option>
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        <option value="@cat.Value">@cat.Text</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn-gradient-teal btn-block-lg mt-10">
+                <i class="bi bi-check-lg"></i> Guardar Servicio
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL NUEVA CATEGORIA -->
+<div id="modalNuevaCategoria" class="modal-overlay">
+    <div class="modal-card modal-card--xs">
+        <div class="modal-header">
+            <h5 class="modal-title">Nueva Categoría</h5>
+            <button onclick="document.getElementById('modalNuevaCategoria').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" action="/Category/Create">
+            @Html.AntiForgeryToken()
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre</label>
+                <input type="text" name="Name" required placeholder="Ej: Útiles escolares" class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (opcional)</label>
+                <input type="text" name="Description" placeholder="Descripción de la categoría" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-check-lg"></i> Guardar Categoría
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR CATEGORIA -->
+<div id="modalEditarCategoria" class="modal-overlay">
+    <div class="modal-card modal-card--xs">
+        <div class="modal-header">
+            <h5 class="modal-title">Editar Categoría</h5>
+            <button onclick="document.getElementById('modalEditarCategoria').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formEditarCategoria">
+            @Html.AntiForgeryToken()
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre</label>
+                <input type="text" name="Name" id="editCategoriaNombre" required class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (opcional)</label>
+                <input type="text" name="Description" id="editCategoriaDescripcion" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-check-lg"></i> Actualizar Categoría
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div id="modalEditarProducto" class="modal-overlay">
+    <div class="modal-card modal-card--lg">
+        <div class="modal-header">
+            <h5 class="modal-title">Editar Producto</h5>
+            <button onclick="document.getElementById('modalEditarProducto').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" id="formEditarProducto">
+            @Html.AntiForgeryToken()
+            <div id="errorEditarProducto" class="d-none alert-error-inline">
+                <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorEditarProductoTexto"></span>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Nombre del producto</label>
+                <input type="text" name="Name" id="editNombre" required class="form-input-dark" />
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Descripción (opcional)</label>
+                <input type="text" name="Description" id="editDescripcion" class="form-input-dark" />
+            </div>
+            <div class="form-grid-2">
+                <div>
+                    <label class="form-label-dark">Precio venta (S/)</label>
+                    <input type="number" name="SalePrice" id="editPrecioVenta" required step="0.01" min="0" class="form-input-dark" />
+                </div>
+                <div id="editPrecioCompraField">
+                    <label class="form-label-dark">Precio compra (S/)</label>
+                    <input type="number" name="PurchasePrice" id="editPrecioCompra" required step="0.01" min="0" class="form-input-dark" />
+                </div>
+            </div>
+            <div id="editStockField" class="form-grid-2">
+                <div>
+                    <label class="form-label-dark">Stock</label>
+                    <input type="number" name="Stock" id="editStock" min="0" class="form-input-dark" />
+                </div>
+                <div>
+                    <label class="form-label-dark">Stock mínimo</label>
+                    <input type="number" name="MinimumStock" id="editStockMinimo" min="0" class="form-input-dark" />
+                </div>
+            </div>
+            <div class="form-group-dark">
+                <label class="form-label-dark">Categoría</label>
+                <select name="CategoryId" id="editCategoria" required class="form-input-dark">
+                    <option value="">-- Seleccionar categoría --</option>
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        <option value="@cat.Value">@cat.Text</option>
+                    }
+                </select>
+            </div>
+            <div id="editProveedorField" class="form-group-dark">
+                <label class="form-label-dark">Proveedor (opcional)</label>
+                <select name="SupplierId" id="editProveedor" class="form-input-dark">
+                    <option value="">-- Sin proveedor --</option>
+                    @foreach (var sup in ViewBag.Suppliers)
+                    {
+                        <option value="@sup.Value">@sup.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group-dark">
+                <input type="hidden" name="IsService" id="editIsServiceHidden" value="false" />
+                <div class="type-info-box">
+                    <span class="type-info-label">Tipo de producto</span>
+                    <span id="editTipoLabel" class="type-info-value"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg mt-10">
+                <i class="bi bi-check-lg"></i> Guardar Cambios
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/product.js"></script>
+}

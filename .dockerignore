@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.vs/
+**/node_modules/
+*.user
+*.suo
+.git/
+.gitignore
+Dockerfile
+docker-compose.yml
+.env

@@ -1,0 +1,106 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace SistemaWebPapeleria.Migrations
+{
+    /// <inheritdoc />
+    public partial class AgregarDevolucionesACashClosing : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Suppliers",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Products",
+                type: "nvarchar(300)",
+                maxLength: 300,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(300)",
+                oldMaxLength: 300);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Categories",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200);
+
+            migrationBuilder.AddColumn<int>(
+                name: "ReturnedItemsCount",
+                table: "CashClosings",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<decimal>(
+                name: "TotalReturns",
+                table: "CashClosings",
+                type: "decimal(10,2)",
+                nullable: false,
+                defaultValue: 0m);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "ReturnedItemsCount",
+                table: "CashClosings");
+
+            migrationBuilder.DropColumn(
+                name: "TotalReturns",
+                table: "CashClosings");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Suppliers",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Products",
+                type: "nvarchar(300)",
+                maxLength: 300,
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(300)",
+                oldMaxLength: 300,
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "Categories",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200,
+                oldNullable: true);
+        }
+    }
+}

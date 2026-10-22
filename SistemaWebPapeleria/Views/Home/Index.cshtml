@@ -1,0 +1,309 @@
+﻿@model SistemaWebPapeleria.ViewModels.DashboardVM
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Active"] = "Home";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
+<!-- TOPBAR -->
+@if (Model.UserRole == "Administrador")
+{
+    <div class="filter-end-row mb-25">
+        <select id="filtroUsuario" onchange="aplicarFiltro()" class="control-plain">
+            <option value="">Todos</option>
+            @foreach (var user in ViewBag.Usuarios)
+            {
+                <option value="@user.UserId">@user.Name @user.LastName</option>
+            }
+        </select>
+    </div>
+}
+
+<!-- TARJETAS -->
+<div class="@(Model.UserRole == "Administrador" ? "stats-grid-5" : "stats-grid-3") mb-30">
+
+    @if (Model.UserRole == "Administrador")
+    {
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div>
+                    <p class="stat-label">Total Productos</p>
+                    <h3 class="stat-value text-white-c">@Model.TotalProducts</h3>
+                </div>
+                <div class="icon-box icon-box--accent">
+                    <i class="bi bi-box-seam-fill stat-icon text-accent"></i>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Total Ventas</p>
+                <h3 class="stat-value text-white-c">@Model.TotalSales</h3>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-cart-fill stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.UserRole == "Administrador")
+    {
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div>
+                    <p class="stat-label">Total Usuarios</p>
+                    <h3 class="stat-value text-white-c">@Model.TotalUsers</h3>
+                </div>
+                <div class="icon-box icon-box--warning">
+                    <i class="bi bi-person-fill stat-icon text-warning-c"></i>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Ventas del Día</p>
+                <h3 class="stat-value text-white-c">S/ @Model.TodaySales</h3>
+            </div>
+            <div class="icon-box icon-box--danger">
+                <i class="bi bi-currency-dollar stat-icon text-danger-c"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-body">
+            <div>
+                <p class="stat-label">Ganancia Neta del Día</p>
+                <h3 class="stat-value text-success-c">S/ @Model.TodayNetProfit.ToString("0.00")</h3>
+                <p class="text-muted-11-alt mt-6">
+                    @Model.TodayReturnsCount devuelto@(Model.TodayReturnsCount == 1 ? "" : "s") · S/ @Model.TodayReturnsAmount.ToString("0.00") devueltos
+                </p>
+            </div>
+            <div class="icon-box icon-box--success">
+                <i class="bi bi-graph-up-arrow stat-icon text-success-c"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GRAFICAS -->
+<div class="charts-grid mb-30">
+
+    <!-- Grafica de barras - Ventas ultima semana -->
+    <div class="data-panel">
+        <h5 class="panel-title mb-20">
+            <i class="bi bi-bar-chart-fill icon-accent-mr"></i> Ventas de la última semana
+        </h5>
+        <canvas id="chartSemana" class="chart-canvas"></canvas>
+    </div>
+
+    <!-- Grafica de dona - Ventas por metodo de pago -->
+    <div class="data-panel">
+        <h5 class="panel-title mb-20">
+            <i class="bi bi-pie-chart-fill icon-accent-mr"></i> Ventas por método de pago
+        </h5>
+        <canvas id="chartPago" class="chart-canvas"></canvas>
+    </div>
+
+</div>
+
+<!-- GRAFICA GANANCIA VS INVERTIDO -->
+<div class="data-panel mb-30">
+    <div class="section-header">
+        <h5 class="panel-title m-0">
+            <i class="bi bi-graph-up-arrow icon-accent-mr"></i> Ganancia vs. Invertido (última semana)
+        </h5>
+        <span id="gananciaNetaBadge" class="ganancia-neta-badge @(Model.WeekGanancia.Sum() >= 0 ? "pill-badge--success" : "pill-badge--danger")">
+            Neto: S/ @Model.WeekGanancia.Sum().ToString("0.00")
+        </span>
+    </div>
+    <canvas id="chartGanancia" class="chart-canvas"></canvas>
+</div>
+
+<!-- FILA INFERIOR -->
+<div class="@(Model.UserRole == "Administrador" ? "bottom-grid-3" : "bottom-grid-2") mt-30 mb-30">
+
+    <!-- Productos con stock bajo -->
+    <div class="data-panel">
+        <h5 class="panel-title mb-15">
+            <i class="bi bi-exclamation-triangle-fill text-danger-c icon-mr-sm"></i> Stock bajo
+        </h5>
+        @if (Model.LowStockProducts.Count == 0)
+        {
+            <p class="empty-list-text">Sin alertas de stock</p>
+        }
+        else
+        {
+            @foreach (var p in Model.LowStockProducts)
+            {
+                <div class="cat-item">
+                    <span class="text-white-13">@p.Name</span>
+                    <span class="badge-low">@p.Stock unid.</span>
+                </div>
+            }
+        }
+    </div>
+
+    @if (Model.UserRole == "Administrador")
+    {
+        <!-- Top 5 productos mas vendidos -->
+        <div class="data-panel">
+            <h5 class="panel-title mb-15">
+                <i class="bi bi-trophy-fill text-warning-c icon-mr-sm"></i> Top 5 más vendidos
+            </h5>
+            @if (Model.TopProducts.Count == 0)
+            {
+                <p class="empty-list-text">Sin datos aún</p>
+            }
+            else
+            {
+                @for (int i = 0; i < Model.TopProducts.Count; i++)
+                {
+                    <div class="cat-item">
+                        <div class="flex-gap-10">
+                            <span class="rank-number">@(i + 1).</span>
+                            <span class="text-white-13">@Model.TopProducts[i].ProductName</span>
+                        </div>
+                        <span class="text-success-13-bold">@Model.TopProducts[i].TotalSold unid.</span>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    <!-- Resumen metodo de pago -->
+    <div class="data-panel">
+        <h5 class="panel-title mb-15">
+            <i class="bi bi-cash-coin text-success-c icon-mr-sm"></i> Resumen de pagos
+        </h5>
+        <div class="stack-gap-12">
+            <div class="flex-between">
+                <span class="text-muted-13">Efectivo</span>
+                <span id="resEfectivo" class="text-white-bold-13">S/ @Model.SalesEfectivo.ToString("0.00")</span>
+            </div>
+            <div class="flex-between">
+                <span class="text-muted-13">Yape</span>
+                <span id="resYape" class="text-white-bold-13">S/ @Model.SalesYape.ToString("0.00")</span>
+            </div>
+            <div class="flex-between">
+                <span class="text-muted-13">Plin</span>
+                <span id="resPlin" class="text-white-bold-13">S/ @Model.SalesPlin.ToString("0.00")</span>
+            </div>
+            <div class="flex-between">
+                <span class="text-muted-13">Tarjeta</span>
+                <span id="resTarjeta" class="text-white-bold-13">S/ @Model.SalesTarjeta.ToString("0.00")</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- TABLA ULTIMAS VENTAS -->
+<div class="data-panel">
+    <h5 class="panel-title mb-20">
+        <i class="bi bi-clock-history icon-accent-mr"></i> Últimas Ventas
+    </h5>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Vendedor</th>
+                <th>Método de Pago</th>
+                <th>Total</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyVentas">
+            @if (Model.LastSales.Count == 0)
+            {
+                <tr>
+                    <td colspan="6" class="table-empty-cell--sm">
+                        <i class="bi bi-clock-history table-empty-icon--sm"></i>
+                        No hay ventas registradas aún
+                    </td>
+                </tr>
+            }
+            @foreach (var venta in Model.LastSales)
+            {
+                <tr>
+                    <td class="text-muted-13">#@venta.SaleId</td>
+                    <td class="text-muted-13">@venta.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-white-13">@venta.User.Name @venta.User.LastName</td>
+                    <td class="text-muted-13">@venta.PaymentMethod</td>
+                    <td class="text-success-13-bold">S/ @venta.Total</td>
+                    <td>
+                        @if (venta.ReceiptIssued)
+                        {
+                            <span class="pill-badge pill-badge--success pill-badge--py4">Con comprobante</span>
+                        }
+                        else
+                        {
+                            <span class="pill-badge pill-badge--warning pill-badge--py4">Sin comprobante</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MENSAJE ACCESO NEGADO -->
+@{
+    var accesoNegado = Context.Session.GetString("AccesoNegado");
+    if (accesoNegado != null)
+    {
+        Context.Session.Remove("AccesoNegado");
+    }
+}
+@if (accesoNegado != null)
+{
+    <div id="toastAccesoNegado" class="toast-denied">
+        <i class="bi bi-shield-x toast-denied-icon"></i>
+        <span class="toast-denied-text">@accesoNegado</span>
+        <button onclick="document.getElementById('toastAccesoNegado').style.display='none'" class="toast-denied-close">×</button>
+    </div>
+}
+
+<!-- MODAL BIENVENIDA -->
+@if (TempData["Bienvenida"] != null)
+{
+    <div id="modalBienvenida" class="modal-welcome-overlay">
+        <div class="modal-welcome-card">
+            @if (TempData["Bienvenida"].ToString() == "Administrador")
+            {
+                <i class="bi bi-shield-check modal-welcome-icon text-accent"></i>
+                <h4 class="modal-welcome-title">¡Bienvenido, Administrador!</h4>
+            }
+            else
+            {
+                <i class="bi bi-cart-check modal-welcome-icon text-success-c"></i>
+                <h4 class="modal-welcome-title">¡Bienvenido, Vendedor!</h4>
+            }
+            <p class="modal-welcome-name">@Model.UserName</p>
+            <button onclick="document.getElementById('modalBienvenida').style.display='none'" class="modal-welcome-btn">
+                Continuar <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const weekDaysData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeekDays));
+        const weekSalesData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeekSales));
+        const weekGananciaData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeekGanancia));
+        const weekInvertidoData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WeekInvertido));
+        const pagoData = [@Model.SalesEfectivo, @Model.SalesYape, @Model.SalesPlin, @Model.SalesTarjeta];
+    </script>
+    <script src="~/js/home.js"></script>
+}

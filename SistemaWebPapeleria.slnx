@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SistemaWebPapaleria.PruebasUnitarias/SistemaWebPapaleria.PruebasUnitarias.csproj" Id="77d1fbb3-5adb-45d9-a192-4d0b31fff139" />
+  <Project Path="SistemaWebPapeleria.PruebasFuncionales/SistemaWebPapeleria.PruebasFuncionales.csproj" Id="ef5bfce9-293e-45c6-8bd1-c2c4f651794f" />
+  <Project Path="SistemaWebPapeleria/SistemaWebPapeleria.csproj" />
+</Solution>

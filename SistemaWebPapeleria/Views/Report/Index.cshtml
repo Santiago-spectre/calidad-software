@@ -1,0 +1,328 @@
+﻿@model List<SistemaWebPapeleria.Models.Sale>
+@{
+    ViewData["Title"] = "Reportes";
+    ViewData["Active"] = "Report";
+    var userRole = Context.Session.GetString("UserRole");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/report.css" />
+}
+
+<!-- TOPBAR -->
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Análisis y estadísticas</p>
+        <h4 class="page-title">Reportes</h4>
+    </div>
+</div>
+
+<!-- REPORTE DEL DÍA -->
+<div class="mb-30">
+    <div class="section-header">
+        <h5 class="section-title">Reporte del Día</h5>
+        @if (userRole == "Administrador" && (bool)ViewBag.TodasCajasCerradasHoy)
+        {
+            <button onclick="window.open('/Report/GenerarReporteDiario?fecha=' + '@DateTime.Today.ToString("yyyy-MM-dd")', '_blank')" class="btn-accent-soft btn-accent-soft--md">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i> Cierre General del Día
+            </button>
+        }
+    </div>
+    <div class="data-panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    @if (userRole == "Administrador")
+                    {
+                        <th>Vendedor</th>
+                    }
+                    <th>Fecha</th>
+                    <th>N° Ventas</th>
+                    <th>Total Recaudado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in ViewBag.ReporteHoy)
+                {
+                    <tr>
+                        @if (userRole == "Administrador")
+                        {
+                            <td class="text-white-13">@r.NombreCompleto</td>
+                        }
+                        <td class="text-muted-13">@DateTime.Today.ToString("dd/MM/yyyy")</td>
+                        <td class="text-muted-13">@r.NumVentas ventas</td>
+                        <td class="text-success-13-bold">S/ @r.TotalVentas.ToString("0.00")</td>
+                        <td>
+                            @if (userRole == "Administrador")
+                            {
+                                var cajasCerradas = (List<int>)ViewBag.CajasCerradasHoy;
+                                if (cajasCerradas.Contains((int)r.UserId))
+                                {
+                                    <button onclick="window.open('/Report/GenerarReporteDiario?fecha=' + '@DateTime.Today.ToString("yyyy-MM-dd")' + '&vendedorId=' + @r.UserId, '_blank')" class="btn-accent-soft btn-accent-soft--sm">
+                                        <i class="bi bi-file-earmark-bar-graph-fill"></i> Generar Reporte
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="text-muted-12-b">Sin cerrar</span>
+                                }
+                            }
+                            else
+                            {
+                                if ((bool)ViewBag.CajaCerradaHoy)
+                                {
+                                    <button onclick="window.open('/Report/GenerarReporteDiario?fecha=' + '@DateTime.Today.ToString("yyyy-MM-dd")' + '&vendedorId=' + @r.UserId, '_blank')" class="btn-accent-soft btn-accent-soft--sm">
+                                        <i class="bi bi-file-earmark-bar-graph-fill"></i> Generar Reporte
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="text-muted-12-b">Sin cerrar</span>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- HISTORIAL ÚLTIMOS 7 DÍAS -->
+<div class="mb-30">
+    <h5 class="section-title mb-14">Historial Últimos 7 Días</h5>
+    <div class="data-panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    @if (userRole == "Administrador")
+                    {
+                        <th>Vendedor</th>
+                    }
+                    <th>N° Ventas</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (((IEnumerable<SistemaWebPapeleria.Models.CashClosing>)ViewBag.Historial7).Any())
+                {
+                    @foreach (var caja in (IEnumerable<SistemaWebPapeleria.Models.CashClosing>)ViewBag.Historial7)
+                    {
+                        var ventasDia = Model.Count(s => s.UserId == caja.UserId && s.Date.Date == caja.Date.Date);
+                        <tr>
+                            <td class="text-muted-13">@caja.Date.ToString("dd/MM/yyyy")</td>
+                            @if (userRole == "Administrador")
+                            {
+                                <td class="text-white-13">@caja.User?.Name @caja.User?.LastName</td>
+                            }
+                            <td class="text-muted-13">@ventasDia ventas</td>
+                            <td class="text-success-13-bold">S/ @caja.TotalSales.ToString("0.00")</td>
+                            <td>
+                                <button onclick="window.open('/Report/GenerarReporteDiario?fecha=' + '@caja.Date.ToString("yyyy-MM-dd")' + '&vendedorId=' + @caja.UserId, '_blank')" class="btn-accent-soft btn-accent-soft--sm">
+                                    <i class="bi bi-file-earmark-bar-graph-fill"></i> Generar Reporte
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="table-empty-cell">
+                            <i class="bi bi-calendar-x table-empty-icon"></i>
+                            No hay registros en los últimos 7 días
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- TABLA DE VENTAS -->
+<div class="data-panel mb-30">
+
+    <!-- Encabezado y filtros -->
+    <div class="filter-header-row">
+        <div>
+            <h5 class="section-title section-title--sm">Historial de Ventas</h5>
+            <p class="text-muted-12-mt4">Tabla de ventas y generación de comprobantes</p>
+        </div>
+        <div class="filter-controls-row">
+            @if (userRole == "Administrador")
+            {
+                <select id="filtroUsuario" onchange="filtrar()" class="control-plain">
+                    <option value="">Todos los vendedores</option>
+                    @foreach (var user in ViewBag.Users)
+                    {
+                        <option value="@user.Name @user.LastName">@user.Name @user.LastName</option>
+                    }
+                </select>
+            }
+            <input type="date" id="filtroFecha" onchange="filtrar()" class="control-plain" />
+            <input type="text" id="filtroBuscar" oninput="filtrar()" placeholder="Buscar..." class="control-plain" />
+        </div>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vendedor</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Método de Pago</th>
+                <th>Comprobante</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody id="tablaVentas">
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="7" class="table-empty-cell">
+                        <i class="bi bi-receipt table-empty-icon"></i>
+                        No hay ventas registradas aún
+                    </td>
+                </tr>
+            }
+            @foreach (var sale in Model)
+            {
+                <tr data-vendedor="@sale.User?.Name @sale.User?.LastName" data-fecha="@sale.Date.ToString("yyyy-MM-dd")">
+                    <td class="text-muted-13-dim">#@sale.SaleId</td>
+                    <td class="text-white-13">@sale.User?.Name @sale.User?.LastName</td>
+                    <td class="text-muted-13">@sale.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-success-13-bold">S/ @sale.Total.ToString("0.00")</td>
+                    <td class="text-muted-13">@sale.PaymentMethod</td>
+                    <td>
+                        @if (sale.ReceiptIssued)
+                        {
+                            <span class="pill-badge pill-badge--success">Emitido</span>
+                        }
+                        else
+                        {
+                            <span class="pill-badge pill-badge--muted">No generada</span>
+                        }
+                    </td>
+                    <td>
+                        <button onclick="verDetalle(@sale.SaleId)" class="btn-success-soft btn-accent-soft--sm">
+                            <i class="bi bi-eye-fill"></i> Ver detalle
+                        </button>
+                        <button onclick="abrirDevolucion(@sale.SaleId)" class="btn-danger-soft btn-accent-soft--sm">
+                            <i class="bi bi-arrow-return-left"></i> Devolución
+                        </button>
+                        <button onclick="generarComprobante(@sale.SaleId)" class="btn-accent-soft btn-accent-soft--sm">
+                            <i class="bi bi-file-earmark-text-fill"></i> Generar Comprobante
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- PAGINACIÓN -->
+    <div id="paginacion" class="pagination-nav-row">
+        <button onclick="cambiarPagina(-1)" id="btnAnterior" class="btn-pagination">
+            ← Anterior
+        </button>
+        <span id="infoPagina" class="text-muted-13-mid"></span>
+        <button onclick="cambiarPagina(1)" id="btnSiguiente" class="btn-pagination">
+            Siguiente →
+        </button>
+    </div>
+</div>
+
+<!-- INFORMES MENSUALES -->
+<div class="data-panel">
+    <h5 class="section-title section-title--sm mb-5">Informes de Ventas Mensuales</h5>
+    <p class="text-muted-12 mb-14">Generar informes de ventas por mes</p>
+
+    @if (ViewBag.MonthlyGroups.Count == 0)
+    {
+        <div class="empty-block">
+            <i class="bi bi-calendar-x table-empty-icon icon-muted-20"></i>
+            <p class="text-muted-13-light">No hay informes disponibles aún</p>
+        </div>
+    }
+    else
+    {
+        <div class="monthly-grid">
+            @foreach (var group in ViewBag.MonthlyGroups)
+            {
+                <div class="monthly-card">
+                    <div class="monthly-card-header">
+                        <h4 class="monthly-card-title">@group.MonthName</h4>
+                        <i class="bi bi-download icon-primary-18"></i>
+                    </div>
+                    <p class="text-muted-12 mb-5">@group.Count ventas — S/ @group.Total.ToString("0.00")</p>
+                    <button onclick="descargarReporte(@group.Month, @group.Year)" class="btn-gradient-cta btn-download-report">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Descargar Reporte (PDF)
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- MODAL DETALLE DE VENTA -->
+<div id="modalDetalle" class="modal-overlay-blur">
+    <div class="modal-card-gradient">
+        <div class="modal-header-simple">
+            <h5 class="modal-title-simple">Detalle de Venta <span id="modalSaleId" class="text-accent"></span></h5>
+            <button onclick="cerrarModal()" class="modal-x-btn">×</button>
+        </div>
+        <div id="modalInfo" class="modal-info-row">
+            <span id="modalFecha" class="text-muted-13-mid"></span>
+            <span id="modalPago" class="text-muted-13-mid"></span>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">P. Unit.</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="modalItems"></tbody>
+        </table>
+        <div class="modal-total-row">
+            <span id="modalDescuento" class="modal-descuento-text"></span>
+            <span id="modalTotal" class="modal-total-text"></span>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DEVOLUCIÓN -->
+<div id="modalDevolucion" class="modal-overlay-blur">
+    <div class="modal-card-gradient">
+        <div class="modal-header-simple">
+            <h5 class="modal-title-simple">Devolución — Venta <span id="devSaleId" class="text-danger-c"></span></h5>
+            <button onclick="cerrarDevolucion()" class="modal-x-btn">×</button>
+        </div>
+        <p class="modal-instruction-text">Selecciona los productos y la cantidad a devolver:</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Vendido</th>
+                    <th class="text-center">A devolver</th>
+                </tr>
+            </thead>
+            <tbody id="devItems"></tbody>
+        </table>
+        <div class="mt-15">
+            <label class="form-label-simple">Motivo (opcional)</label>
+            <input id="devMotivo" type="text" placeholder="Ej: Producto defectuoso..." class="form-input-simple" />
+        </div>
+        <button onclick="confirmarDevolucion()" class="btn-gradient-return">
+            <i class="bi bi-arrow-return-left"></i> Confirmar Devolución
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/report.js"></script>
+}

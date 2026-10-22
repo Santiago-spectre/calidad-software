@@ -1,0 +1,23 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    ViewData["Active"] = "";
+    Layout = "_Layout";
+}
+
+<div class="error-page-wrapper">
+    <div class="error-icon-circle">
+        <i class="bi bi-exclamation-triangle-fill text-danger-c fs-40"></i>
+    </div>
+    <h2 class="error-title">Algo salió mal</h2>
+    <p class="error-text">
+        Ocurrió un error inesperado. Por favor intenta de nuevo o contacta al administrador si el problema persiste.
+    </p>
+    @if (Model?.ShowRequestId == true)
+    {
+        <p class="error-id-text">ID: @Model.RequestId</p>
+    }
+    <a href="/Home/Index" class="btn-gradient-primary-link">
+        <i class="bi bi-house-fill"></i> Volver al inicio
+    </a>
+</div>

@@ -1,0 +1,263 @@
+﻿@model List<SistemaWebPapeleria.Models.CashClosing>
+@{
+    ViewData["Title"] = "Caja General";
+    ViewData["Active"] = "CashClosing";
+    var userRole = Context.Session.GetString("UserRole");
+    var userId = int.Parse(Context.Session.GetString("UserId") ?? "0");
+    var cajaAbierta = Model.FirstOrDefault(c => c.UserId == userId && c.IsOpen);
+}
+@section Styles {
+    <link href="~/css/cashclosing.css" rel="stylesheet" />/>
+}
+
+<partial name="_AlertMessages" />
+
+<!-- TOPBAR -->
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Gestión de caja</p>
+        <h4 class="page-title">Caja General</h4>
+    </div>
+    @if (cajaAbierta == null)
+    {
+        <button onclick="document.getElementById('modalAbrir').style.display='flex'" class="btn-gradient-cta btn-pill-icon">
+            <i class="bi bi-cash-stack"></i> Abrir Caja
+        </button>
+    }
+    else
+    {
+        <span class="status-chip">
+            <i class="bi bi-circle-fill status-dot"></i> Caja Abierta
+        </span>
+    }
+</div>
+
+<!-- ESTADO DE CAJA HOY -->
+<div class="mb-25">
+    <h5 class="section-title mb-14">Estado de Caja Hoy</h5>
+    <div class="data-panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Vendedor</th>
+                    <th>Apertura</th>
+                    <th>Monto Inicial</th>
+                    <th>Total Ventas</th>
+                    <th>Devuelto</th>
+                    <th>Monto Final</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in ViewBag.Usuarios)
+                {
+                    var cajaUsuarioHoy = ((List<SistemaWebPapeleria.Models.CashClosing>)ViewBag.CajasHoy)
+                        .Where(c => c.UserId == user.UserId)
+                        .OrderByDescending(c => c.CashClosingId)
+                        .FirstOrDefault();
+                    var tieneAbierta = cajaUsuarioHoy != null && cajaUsuarioHoy.IsOpen;
+                    var tieneCerrada = cajaUsuarioHoy != null && !cajaUsuarioHoy.IsOpen;
+
+                    <tr>
+                        <td class="text-white-13">@user.Name @user.LastName</td>
+                        <td class="text-muted-13">
+                            @(cajaUsuarioHoy != null ? cajaUsuarioHoy.Date.ToString("dd/MM/yyyy HH:mm") : "-")
+                        </td>
+                        <td class="text-success-13-bold">
+                            @(cajaUsuarioHoy != null ? "S/ " + cajaUsuarioHoy.InitialAmount.ToString("0.00") : "-")
+                        </td>
+                        <td class="text-success-13-bold">
+                            @(cajaUsuarioHoy != null ? "S/ " + cajaUsuarioHoy.TotalSales.ToString("0.00") : "-")
+                        </td>
+                        <td class="text-danger-c fs-13">
+                            @(cajaUsuarioHoy != null
+                                ? (cajaUsuarioHoy.TotalReturns > 0
+                                    ? "S/ " + cajaUsuarioHoy.TotalReturns.ToString("0.00") + " (" + cajaUsuarioHoy.ReturnedItemsCount + ")"
+                                    : "S/ 0.00")
+                                : "-")
+                        </td>
+                        <td class="text-success-13-bold">
+                            @(cajaUsuarioHoy != null ? "S/ " + cajaUsuarioHoy.ClosingAmount.ToString("0.00") : "-")
+                        </td>
+                        <td>
+                            @if (tieneAbierta)
+                            {
+                                <span class="pill-badge pill-badge--success pill-badge--py4">Abierta</span>
+                            }
+                            else if (tieneCerrada)
+                            {
+                                <span class="pill-badge pill-badge--accent pill-badge--py4">Cerrada</span>
+                            }
+                            else
+                            {
+                                <span class="pill-badge pill-badge--danger pill-badge--py4">Sin abrir</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                @if (user.UserId == userId && !tieneAbierta)
+                                {
+                                    @if (tieneCerrada)
+                                    {
+                                        <form method="post" action="/CashClosing/Open" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="initialAmount" value="0" />
+                                            <button type="submit" class="btn-icon-action btn-icon-action--success">
+                                                <i class="bi bi-unlock-fill"></i> Abrir Caja
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button onclick="document.getElementById('modalAbrir').style.display='flex'" class="btn-icon-action btn-icon-action--success">
+                                            <i class="bi bi-unlock-fill"></i> Abrir Caja
+                                        </button>
+                                    }
+                                }
+                                @if (tieneAbierta)
+                                {
+                                    <form method="post" action="/CashClosing/Close/@cajaUsuarioHoy.CashClosingId" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon-action btn-icon-action--light">
+                                            <i class="bi bi-lock-fill"></i> Cerrar
+                                        </button>
+                                    </form>
+                                    <button onclick="abrirEditarMonto(@cajaUsuarioHoy.CashClosingId, @cajaUsuarioHoy.InitialAmount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))" class="btn-outline-warning-sm">
+                                        <i class="bi bi-pencil-fill"></i> Editar Monto
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- historial -->
+<h5 class="section-title mb-14">Historial de Caja</h5>
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Vendedor</th>
+                <th>Apertura</th>
+                <th>Monto Inicial</th>
+                <th>Total Ventas</th>
+                <th>Devuelto</th>
+                <th>Monto Final</th>
+                <th>Estado</th>
+                @if (userRole == "Administrador")
+                {
+                    <th>Acciones</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var caja in Model)
+            {
+                var estaAbierta = caja.IsOpen;
+                <tr>
+                    <td class="text-white-13">@caja.User?.Name @caja.User?.LastName</td>
+                    <td class="text-muted-13">@caja.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-success-13-bold">S/ @caja.InitialAmount.ToString("0.00")</td>
+                    <td class="text-success-13-bold">S/ @caja.TotalSales.ToString("0.00")</td>
+                    <td class="text-danger-c fs-13">
+                        @(caja.TotalReturns > 0 ? "S/ " + caja.TotalReturns.ToString("0.00") + " (" + caja.ReturnedItemsCount + ")" : "S/ 0.00")
+                    </td>
+                    <td class="text-success-13-bold">S/ @caja.ClosingAmount.ToString("0.00")</td>
+                    <td>
+                        @if (estaAbierta)
+                        {
+                            <span class="pill-badge pill-badge--success pill-badge--py4">Abierta</span>
+                        }
+                        else
+                        {
+                            <span class="pill-badge pill-badge--accent pill-badge--py4">Cerrada</span>
+                        }
+                    </td>
+                    @if (userRole == "Administrador")
+                    {
+                        <td>
+                            <div class="row-actions">
+                                @if (estaAbierta)
+                                {
+                                    <form method="post" action="/CashClosing/Close/@caja.CashClosingId" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-icon-action btn-icon-action--light">
+                                            <i class="bi bi-lock-fill"></i> Cerrar
+                                        </button>
+                                    </form>
+                                }
+                                <form method="post" action="/CashClosing/Delete/@caja.CashClosingId" class="m-0" id="formEliminarCaja_@caja.CashClosingId">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button" onclick="confirmarEliminar('formEliminarCaja_@caja.CashClosingId', '¿Eliminar este registro de caja?')" class="btn-icon-action btn-icon-action--danger">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-cash-stack empty-state-icon"></i>
+            <p class="empty-state-text">No hay registros de caja</p>
+        </div>
+    }
+</div>
+
+<!-- MODAL ABRIR CAJA -->
+<div id="modalAbrir" class="modal-overlay">
+    <div class="modal-card modal-card--xs">
+        <div class="modal-header">
+            <h5 class="modal-title">Abrir Caja</h5>
+            <button onclick="document.getElementById('modalAbrir').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" action="/CashClosing/Open">
+            @Html.AntiForgeryToken()
+            <div class="form-group-dark">
+                <label class="form-label-dark">Monto Inicial (S/)</label>
+                <input type="number" name="initialAmount" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-cash-stack"></i> Abrir Caja
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR MONTO INICIAL -->
+<div id="modalEditarMonto" class="modal-overlay">
+    <div class="modal-card modal-card--sm">
+        <div class="modal-header">
+            <h5 class="modal-title">Editar Monto Inicial</h5>
+            <button onclick="document.getElementById('modalEditarMonto').style.display='none'" class="modal-close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="post" action="/CashClosing/EditInitialAmount">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="editCajaId" name="id" value="" />
+            <div class="mb-20">
+                <label class="form-label-dark">Nuevo Monto Inicial (S/)</label>
+                <input type="number" id="editMontoInicial" name="initialAmount" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+            </div>
+            <button type="submit" class="btn-gradient-cta btn-block-lg">
+                <i class="bi bi-check-lg"></i> Guardar Cambio
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/cashClosing.js"></script>
+}
