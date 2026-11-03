@@ -17,9 +17,9 @@ namespace SistemaWebPapeleria.PruebasFuncionales
         {
             //preparacion
             Driver.Navigate().GoToUrl(UrlBase + "/Login/Login");
-            Driver.FindElement(By.Id("Email")).SendKeys(CorreoVendedor);
-            Driver.FindElement(By.Id("loginPassword")).SendKeys(ClaveVendedor);
-            Driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            Escribir(Driver.FindElement(By.Id("Email")), CorreoVendedor);
+            Escribir(Driver.FindElement(By.Id("loginPassword")), ClaveVendedor);
+            Clic(Driver.FindElement(By.CssSelector("button[type='submit']")));
             Assert.IsTrue(Driver.Url.Contains("/Home"), "El vendedor no pudo iniciar sesión.");
 
             //ejecucion

@@ -19,9 +19,9 @@ namespace SistemaWebPapeleria.PruebasFuncionales
             Driver.Navigate().GoToUrl(UrlBase + "/Login/Login");
 
             //ejecucion
-            Driver.FindElement(By.Id("Email")).SendKeys(CorreoPrueba);
-            Driver.FindElement(By.Id("loginPassword")).SendKeys(ClavePrueba);
-            Driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            Escribir(Driver.FindElement(By.Id("Email")), CorreoPrueba);
+            Escribir(Driver.FindElement(By.Id("loginPassword")), ClavePrueba);
+            Clic(Driver.FindElement(By.CssSelector("button[type='submit']")));
 
             //afirmacion
             StringAssert.Contains(Driver.Url, "/Home");
@@ -36,9 +36,9 @@ namespace SistemaWebPapeleria.PruebasFuncionales
             Driver.Navigate().GoToUrl(UrlBase + "/Login/Login");
 
             //ejecucion
-            Driver.FindElement(By.Id("Email")).SendKeys(CorreoPrueba);
-            Driver.FindElement(By.Id("loginPassword")).SendKeys("ClaveIncorrecta_123");
-            Driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            Escribir(Driver.FindElement(By.Id("Email")), CorreoPrueba);
+            Escribir(Driver.FindElement(By.Id("loginPassword")), "ClaveIncorrecta_123");
+            Clic(Driver.FindElement(By.CssSelector("button[type='submit']")));
 
             //afirmacion
             var alerta = Driver.FindElement(By.CssSelector("div.alert.alert-danger"));

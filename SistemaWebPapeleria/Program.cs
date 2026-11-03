@@ -41,16 +41,6 @@ builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new 
 
 var app = builder.Build();
 
-// Aplica migraciones automáticamente solo cuando corre dentro de Docker
-if (app.Environment.IsEnvironment("Docker"))
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<SistemaWebPapeleria.Data.AppDbContext>();
-        db.Database.Migrate();
-    }
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -71,5 +61,13 @@ app.MapControllerRoute(
     pattern: "{controller=Login}/{action=Login}/{id?}")
     .WithStaticAssets();
 
+// Crea la base de datos y aplica las migraciones al iniciar, solo si la configuracion lo pide
+// (se activa con la variable AplicarMigraciones=true en el docker-compose)
+if (app.Configuration.GetValue<bool>("AplicarMigraciones"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();

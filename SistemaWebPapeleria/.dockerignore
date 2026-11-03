@@ -1,0 +1,18 @@
+# Resultados de compilacion de Windows (Docker compila los suyos dentro del contenedor)
+**/bin/
+**/obj/
+
+# Archivos del editor y del control de versiones
+.vs/
+.git/
+.gitignore
+*.user
+
+# Archivos de Docker (no hace falta que viajen dentro de la imagen)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Claves y configuracion local: nunca deben quedar dentro de la imagen
+.env
+Properties/launchSettings.json
