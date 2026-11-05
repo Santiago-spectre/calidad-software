@@ -154,6 +154,7 @@
         <div class="filter-controls-row">
             @if (userRole == "Administrador")
             {
+                <label class="visually-hidden" for="filtroUsuario">Filtrar por vendedor</label>
                 <select id="filtroUsuario" onchange="filtrar()" class="control-plain">
                     <option value="">Todos los vendedores</option>
                     @foreach (var user in ViewBag.Users)
@@ -162,7 +163,10 @@
                     }
                 </select>
             }
+            <label class="visually-hidden" for="filtroFecha">Filtrar por fecha</label>
             <input type="date" id="filtroFecha" onchange="filtrar()" class="control-plain" />
+
+            <label class="visually-hidden" for="filtroBuscar">Buscar venta</label>
             <input type="text" id="filtroBuscar" oninput="filtrar()" placeholder="Buscar..." class="control-plain" />
         </div>
     </div>
@@ -314,7 +318,7 @@
             <tbody id="devItems"></tbody>
         </table>
         <div class="mt-15">
-            <label class="form-label-simple">Motivo (opcional)</label>
+            <label for="devMotivo" class="form-label-simple">Motivo (opcional)</label>
             <input id="devMotivo" type="text" placeholder="Ej: Producto defectuoso..." class="form-input-simple" />
         </div>
         <button onclick="confirmarDevolucion()" class="btn-gradient-return">

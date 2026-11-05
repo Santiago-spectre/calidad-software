@@ -2,7 +2,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <title>@ViewData["Title"] - Papelería Sonia</title>
     <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
@@ -50,17 +50,19 @@
                 <h4>Bienvenido, <span class="text-accent">@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span></h4>
             </div>
             <div class="topbar-derecha">
-                <div class="bell-wrapper" onclick="event.stopPropagation(); toggleNotificaciones()">
-                    <i class="bi bi-bell-fill bell-icon"></i>
-                    <span id="bellBadge" class="bell-badge d-none">0</span>
+                <div class="bell-wrapper notification-wrapper">
+                    <button type="button" id="btnNotificaciones" class="bell-trigger" aria-label="Notificaciones" aria-controls="bellDropdown" aria-expanded="false" onclick="toggleNotificaciones()">
+                        <i class="bi bi-bell-fill bell-icon" aria-hidden="true"></i>
+                        <span id="bellBadge" class="bell-badge d-none">0</span>
+                    </button>
 
-                    <div id="bellDropdown" class="bell-dropdown" onclick="event.stopPropagation()">
+                    <div id="bellDropdown" class="bell-dropdown">
                         <div class="bell-dropdown-header">
                             <span>Notificaciones</span>
                             <div class="bell-dropdown-actions">
-                                <button onclick="marcarTodasLeidas()" title="Marcar todas como leídas"><i class="bi bi-check2-all"></i></button>
+                                <button type="button" onclick="marcarTodasLeidas()" title="Marcar todas como leídas" aria-label="Marcar todas las notificaciones como leídas"><i class="bi bi-check2-all" aria-hidden="true"></i></button>
                                 <span> | </span>
-                                <button onclick="eliminarTodasNotificaciones()" title="Eliminar todas"><i class="bi bi-trash-fill"></i></button>
+                                <button type="button" onclick="eliminarTodasNotificaciones()" title="Eliminar todas" aria-label="Eliminar todas las notificaciones"><i class="bi bi-trash-fill" aria-hidden="true"></i></button>
                             </div>
                         </div>
                         <div id="notifList">
@@ -69,23 +71,21 @@
                     </div>
                 </div>
 
-                <div class="bell-wrapper" onclick="event.stopPropagation(); toggleMenuUsuario()">
-                    <div class="topbar-usuario">
-                        <i class="bi bi-person-circle icon-accent-lg"></i>
+                <div class="bell-wrapper user-menu-wrapper">
+                    <button type="button" id="btnMenuUsuario" class="topbar-usuario bell-trigger" aria-label="Abrir menú de usuario" aria-controls="menuUsuarioDropdown" aria-haspopup="true" aria-expanded="false" onclick="toggleMenuUsuario()">
+                        <i class="bi bi-person-circle icon-accent-lg" aria-hidden="true"></i>
                         <span>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-                        <i class="bi bi-chevron-down icon-muted-xs"></i>
-                    </div>
+                        <i class="bi bi-chevron-down icon-muted-xs" aria-hidden="true"></i>
+                    </button>
 
-                    <div id="menuUsuarioDropdown" class="bell-dropdown bell-dropdown--narrow" onclick="event.stopPropagation()">
-                        <div class="notif-item" onclick="abrirModalPerfil()">
-                            <i class="bi bi-person-fill icon-accent-mr"></i>
+                    <div id="menuUsuarioDropdown" class="bell-dropdown bell-dropdown--narrow">
+                        <button type="button" class="notif-item notif-item--button" onclick="abrirModalPerfil()">
+                            <i class="bi bi-person-fill icon-accent-mr" aria-hidden="true"></i>
                             <span class="text-white-sm">Mi Perfil</span>
-                        </div>
-                        <a href="/Login/Logout" class="text-decoration-none">
-                            <div class="notif-item notif-item--danger">
-                                <i class="bi bi-box-arrow-left icon-mr-sm"></i>
-                                <span class="fs-13">Cerrar Sesión</span>
-                            </div>
+                        </button>
+                        <a href="/Login/Logout" class="notif-item notif-item--danger text-decoration-none">
+                            <i class="bi bi-box-arrow-left icon-mr-sm" aria-hidden="true"></i>
+                            <span class="fs-13">Cerrar Sesión</span>
                         </a>
                     </div>
                 </div>
@@ -97,21 +97,21 @@
             <div class="modal-card">
                 <div class="modal-header">
                     <h5 class="modal-title">Mi Perfil</h5>
-                    <button onclick="document.getElementById('modalMiPerfil').style.display='none'" class="modal-close-btn">
+                    <button type="button" aria-label="Cerrar perfil" onclick="document.getElementById('modalMiPerfil').style.display='none'" class="modal-close-btn">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
                 <form id="formMiPerfil" onsubmit="guardarPerfil(event)">
                     <div class="form-group-dark">
-                        <label class="form-label-dark">Nombre</label>
+                        <label for="perfilNombre" class="form-label-dark">Nombre</label>
                         <input type="text" id="perfilNombre" required class="form-input-dark" />
                     </div>
                     <div class="form-group-dark">
-                        <label class="form-label-dark">Apellido</label>
+                        <label for="perfilApellido" class="form-label-dark">Apellido</label>
                         <input type="text" id="perfilApellido" required class="form-input-dark" />
                     </div>
                     <div class="form-group-dark">
-                        <label class="form-label-dark">Correo</label>
+                        <label for="perfilEmail" class="form-label-dark">Correo</label>
                         <div class="input-group-inline">
                             <input type="email" id="perfilEmail" required oninput="onPerfilEmailChange()" class="form-input-dark flex-fill" />
                             <button type="button" id="btnVerificarPerfilEmail" onclick="enviarCodigoPerfil()" class="d-none btn-gradient-cta btn-inline-action">
@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     <div id="pasoCodigoPerfil" class="d-none form-group-dark">
-                        <label class="form-label-dark">Código de verificación</label>
+                        <label for="inputCodigoPerfil" class="form-label-dark">Código de verificación</label>
                         <div class="input-group-inline">
                             <input type="text" id="inputCodigoPerfil" maxlength="6" placeholder="6 dígitos" class="form-input-dark flex-fill" />
                             <button type="button" onclick="confirmarCodigoPerfil()" class="btn-gradient-success btn-inline-action">
@@ -129,17 +129,17 @@
                         </div>
                     </div>
                     <div class="form-group-dark">
-                        <label class="form-label-dark">Nueva contraseña (opcional)</label>
+                        <label for="perfilPassword" class="form-label-dark">Nueva contraseña (opcional)</label>
                         <div class="input-group-relative">
                             <input type="password" id="perfilPassword" placeholder="Dejar en blanco para no cambiarla" class="form-input-dark form-input-dark--icon" />
-                            <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('perfilPassword', this)"></i>
+                            <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar nueva contraseña" onclick="togglePassword('perfilPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                         </div>
                     </div>
                     <div class="form-group-dark">
-                        <label class="form-label-dark">Repetir contraseña</label>
+                        <label for="perfilConfirmPassword" class="form-label-dark">Repetir contraseña</label>
                         <div class="input-group-relative">
                             <input type="password" id="perfilConfirmPassword" placeholder="Repite la nueva contraseña" class="form-input-dark form-input-dark--icon" />
-                            <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('perfilConfirmPassword', this)"></i>
+                            <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar contraseña repetida" onclick="togglePassword('perfilConfirmPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                         </div>
                     </div>
                     <button type="submit" id="btnGuardarPerfil" class="btn-gradient-cta btn-block-lg">

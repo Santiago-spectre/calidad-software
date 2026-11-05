@@ -19,16 +19,23 @@ iniciarReloj();
 // Dropdown del menú de usuario
 function toggleMenuUsuario() {
     const dropdown = document.getElementById('menuUsuarioDropdown');
+    const trigger = document.getElementById('btnMenuUsuario');
     const estaAbierto = dropdown.classList.contains('show');
     document.getElementById('bellDropdown')?.classList.remove('show');
+    document.getElementById('btnNotificaciones')?.setAttribute('aria-expanded', 'false');
     if (estaAbierto) {
         dropdown.classList.remove('show');
+        trigger?.setAttribute('aria-expanded', 'false');
     } else {
         dropdown.classList.add('show');
+        trigger?.setAttribute('aria-expanded', 'true');
     }
 }
 
-document.addEventListener('click', () => {
-    document.getElementById('menuUsuarioDropdown')?.classList.remove('show');
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('.user-menu-wrapper')) {
+        document.getElementById('menuUsuarioDropdown')?.classList.remove('show');
+        document.getElementById('btnMenuUsuario')?.setAttribute('aria-expanded', 'false');
+    }
 });
 

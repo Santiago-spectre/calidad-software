@@ -2,17 +2,23 @@
 
 function toggleNotificaciones() {
     const dropdown = document.getElementById('bellDropdown');
+    const trigger = document.getElementById('btnNotificaciones');
     const estaAbierto = dropdown.classList.contains('show');
     if (estaAbierto) {
         dropdown.classList.remove('show');
+        trigger?.setAttribute('aria-expanded', 'false');
     } else {
         dropdown.classList.add('show');
+        trigger?.setAttribute('aria-expanded', 'true');
         cargarNotificaciones();
     }
 }
 
-document.addEventListener('click', () => {
-    document.getElementById('bellDropdown')?.classList.remove('show');
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('.notification-wrapper')) {
+        document.getElementById('bellDropdown')?.classList.remove('show');
+        document.getElementById('btnNotificaciones')?.setAttribute('aria-expanded', 'false');
+    }
 });
 
 function tiempoRelativo(fechaISO) {
