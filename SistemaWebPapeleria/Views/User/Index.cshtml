@@ -60,7 +60,7 @@
                     {
                         <td>
                             <div class="row-actions">
-                                <button onclick="abrirEditar(this)"
+                                <button type="button" aria-label="Editar @user.Name @user.LastName" onclick="abrirEditar(this)"
                                         data-id="@user.UserId"
                                         data-nombre="@user.Name"
                                         data-apellido="@user.LastName"
@@ -71,7 +71,7 @@
                                 </button>
                                 <form method="post" action="/User/ToggleStatus/@user.UserId" class="m-0">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn-icon-action btn-icon-action--warning">
+                                    <button type="submit" aria-label="Cambiar estado de @user.Name @user.LastName" class="btn-icon-action btn-icon-action--warning">
                                         @if (user.Status)
                                         {
                                             <i class="bi bi-eye-slash-fill"></i>
@@ -84,7 +84,7 @@
                                 </form>
                                 <form method="post" action="/User/Delete/@user.UserId" class="m-0" id="formEliminarUser_@user.UserId">
                                     @Html.AntiForgeryToken()
-                                    <button type="button" onclick="confirmarEliminar('formEliminarUser_@user.UserId', '¿Eliminar este usuario?')" class="btn-icon-action btn-icon-action--danger">
+                                    <button type="button" aria-label="Eliminar @user.Name @user.LastName" onclick="confirmarEliminar('formEliminarUser_@user.UserId', '¿Eliminar este usuario?')" class="btn-icon-action btn-icon-action--danger">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
@@ -109,7 +109,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Agregar Usuario</h5>
-            <button onclick="cerrarModalAgregarUsuario()" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar formulario de usuario" onclick="cerrarModalAgregarUsuario()" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -122,7 +122,7 @@
 
             <!-- PASO 1: Correo -->
             <div id="pasoCorreo" class="form-group-dark">
-                <label class="form-label-dark">Email</label>
+                <label for="inputEmailCrear" class="form-label-dark">Email</label>
                 <div class="input-group-inline">
                     <input type="email" name="Email" id="inputEmailCrear" required placeholder="Ej: juan@correo.com" class="form-input-dark flex-fill" />
                     <button type="button" onclick="enviarCodigoCrearUsuario()" id="btnVerificarCorreo" class="btn-gradient-cta btn-inline-action">
@@ -133,7 +133,7 @@
 
             <!-- PASO 2: Código (oculto hasta enviar) -->
             <div id="pasoCodigo" class="d-none form-group-dark">
-                <label class="form-label-dark">Código de verificación</label>
+                <label for="inputCodigoCrear" class="form-label-dark">Código de verificación</label>
                 <div class="input-group-inline">
                     <input type="text" id="inputCodigoCrear" maxlength="6" placeholder="6 dígitos" class="form-input-dark flex-fill" />
                     <button type="button" onclick="confirmarCodigoCrearUsuario()" class="btn-gradient-success btn-inline-action">
@@ -146,31 +146,31 @@
             <div id="pasoDatos" class="d-none">
                 <div class="form-grid-2">
                     <div>
-                        <label class="form-label-dark">Nombre</label>
-                        <input type="text" name="Name" required placeholder="Ej: Juan" class="form-input-dark" />
+                        <label for="crearNombre" class="form-label-dark">Nombre</label>
+                        <input id="crearNombre" type="text" name="Name" required placeholder="Ej: Juan" class="form-input-dark" />
                     </div>
                     <div>
-                        <label class="form-label-dark">Apellido</label>
-                        <input type="text" name="LastName" required placeholder="Ej: Pérez" class="form-input-dark" />
+                        <label for="crearApellido" class="form-label-dark">Apellido</label>
+                        <input id="crearApellido" type="text" name="LastName" required placeholder="Ej: Pérez" class="form-input-dark" />
                     </div>
                 </div>
                 <div class="form-group-dark">
-                    <label class="form-label-dark">Contraseña</label>
+                    <label for="crearPassword" class="form-label-dark">Contraseña</label>
                     <div class="input-group-relative">
                         <input type="password" name="Password" id="crearPassword" required placeholder="Contraseña" class="form-input-dark form-input-dark--icon" />
-                        <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('crearPassword', this)"></i>
+                        <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar contraseña" onclick="togglePassword('crearPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="form-group-dark">
-                    <label class="form-label-dark">Repetir contraseña</label>
+                    <label for="crearConfirmPassword" class="form-label-dark">Repetir contraseña</label>
                     <div class="input-group-relative">
                         <input type="password" id="crearConfirmPassword" required placeholder="Repite la contraseña" class="form-input-dark form-input-dark--icon" />
-                        <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('crearConfirmPassword', this)"></i>
+                        <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar contraseña repetida" onclick="togglePassword('crearConfirmPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="form-group-dark">
-                    <label class="form-label-dark">Rol</label>
-                    <select name="RoleId" required class="form-input-dark">
+                    <label for="crearRoleId" class="form-label-dark">Rol</label>
+                    <select id="crearRoleId" name="RoleId" required class="form-input-dark">
                         <option value="">-- Seleccionar rol --</option>
                         @foreach (var role in ViewBag.Roles ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>())
                         {
@@ -191,7 +191,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Editar Usuario</h5>
-            <button onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar edición de usuario" onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -203,16 +203,16 @@
             <input type="hidden" name="UserId" id="editUserId" />
             <div class="form-grid-2">
                 <div>
-                    <label class="form-label-dark">Nombre</label>
+                    <label for="editName" class="form-label-dark">Nombre</label>
                     <input type="text" name="Name" id="editName" required class="form-input-dark" />
                 </div>
                 <div>
-                    <label class="form-label-dark">Apellido</label>
+                    <label for="editLastName" class="form-label-dark">Apellido</label>
                     <input type="text" name="LastName" id="editLastName" required class="form-input-dark" />
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Email</label>
+                <label for="editEmail" class="form-label-dark">Email</label>
                 <div class="input-group-inline">
                     <input type="email" name="Email" id="editEmail" required oninput="onEditEmailChange()" class="form-input-dark flex-fill" />
                     <button type="button" id="btnVerificarEditEmail" onclick="enviarCodigoEditarUsuario()" class="d-none btn-gradient-cta btn-inline-action">
@@ -221,7 +221,7 @@
                 </div>
             </div>
             <div id="pasoCodigoEditar" class="d-none form-group-dark">
-                <label class="form-label-dark">Código de verificación</label>
+                <label for="inputCodigoEditar" class="form-label-dark">Código de verificación</label>
                 <div class="input-group-inline">
                     <input type="text" id="inputCodigoEditar" maxlength="6" placeholder="6 dígitos" class="form-input-dark flex-fill" />
                     <button type="button" onclick="confirmarCodigoEditarUsuario()" class="btn-gradient-success btn-inline-action">
@@ -230,21 +230,21 @@
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nueva Contraseña <span class="text-muted-11">(dejar vacío para no cambiar)</span></label>
+                <label for="editPassword" class="form-label-dark">Nueva Contraseña <span class="text-muted-11">(dejar vacío para no cambiar)</span></label>
                 <div class="input-group-relative">
                     <input type="password" name="Password" id="editPassword" placeholder="Nueva contraseña" class="form-input-dark form-input-dark--icon" />
-                    <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('editPassword', this)"></i>
+                    <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar nueva contraseña" onclick="togglePassword('editPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Repetir contraseña</label>
+                <label for="editConfirmPassword" class="form-label-dark">Repetir contraseña</label>
                 <div class="input-group-relative">
                     <input type="password" id="editConfirmPassword" placeholder="Repite la nueva contraseña" class="form-input-dark form-input-dark--icon" />
-                    <i class="bi bi-eye-fill input-icon-toggle" onclick="togglePassword('editConfirmPassword', this)"></i>
+                    <button type="button" class="input-icon-toggle border-0 bg-transparent p-0" aria-label="Mostrar u ocultar contraseña repetida" onclick="togglePassword('editConfirmPassword', this.firstElementChild)"><i class="bi bi-eye-fill" aria-hidden="true"></i></button>
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Rol</label>
+                <label for="editRoleId" class="form-label-dark">Rol</label>
                 <select name="RoleId" id="editRoleId" required class="form-input-dark">
                     <option value="">-- Seleccionar rol --</option>
                     @foreach (var role in ViewBag.Roles ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>())

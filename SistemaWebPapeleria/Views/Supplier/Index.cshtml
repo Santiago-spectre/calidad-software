@@ -60,7 +60,7 @@
                     </td>
                     <td>
                         <div class="row-actions">
-                            <button onclick="abrirEditar(this)"
+                            <button type="button" aria-label="Editar @supplier.Name" onclick="abrirEditar(this)"
                                     data-id="@supplier.SupplierId"
                                     data-nombre="@supplier.Name"
                                     data-telefono="@supplier.Phone"
@@ -71,7 +71,7 @@
                             </button>
                             <form method="post" action="/Supplier/ToggleStatus/@supplier.SupplierId" class="m-0">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-icon-action btn-icon-action--danger">
+                                <button type="submit" aria-label="Cambiar estado de @supplier.Name" class="btn-icon-action btn-icon-action--danger">
                                     @if (supplier.Status)
                                     {
                                         <i class="bi bi-eye-slash-fill"></i>
@@ -84,7 +84,7 @@
                             </form>
                             <form method="post" action="/Supplier/Delete/@supplier.SupplierId" class="m-0" id="formEliminarSupplier_@supplier.SupplierId">
                                 @Html.AntiForgeryToken()
-                                <button type="button" onclick="confirmarEliminar('formEliminarSupplier_@supplier.SupplierId', '¿Eliminar este proveedor?')" class="btn-icon-action btn-icon-action--danger">
+                                <button type="button" aria-label="Eliminar @supplier.Name" onclick="confirmarEliminar('formEliminarSupplier_@supplier.SupplierId', '¿Eliminar este proveedor?')" class="btn-icon-action btn-icon-action--danger">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>
@@ -101,7 +101,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Agregar Proveedor</h5>
-            <button onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar formulario de proveedor" onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -111,20 +111,20 @@
                 <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearProveedorTexto"></span>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre</label>
-                <input type="text" name="Name" required placeholder="Nombre del proveedor" class="form-input-dark" />
+                <label for="nuevoProveedorNombre" class="form-label-dark">Nombre</label>
+                <input id="nuevoProveedorNombre" type="text" name="Name" required placeholder="Nombre del proveedor" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Teléfono</label>
-                <input type="text" name="Phone" required placeholder="Ej: 987654321" class="form-input-dark" />
+                <label for="nuevoProveedorTelefono" class="form-label-dark">Teléfono</label>
+                <input id="nuevoProveedorTelefono" type="text" name="Phone" required placeholder="Ej: 987654321" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Dirección</label>
-                <input type="text" name="Address" required placeholder="Dirección del proveedor" class="form-input-dark" />
+                <label for="nuevoProveedorDireccion" class="form-label-dark">Dirección</label>
+                <input id="nuevoProveedorDireccion" type="text" name="Address" required placeholder="Dirección del proveedor" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (Opcional)</label>
-                <input type="text" name="Description" placeholder="Descripción del proveedor" class="form-input-dark" />
+                <label for="nuevoProveedorDescripcion" class="form-label-dark">Descripción (Opcional)</label>
+                <input id="nuevoProveedorDescripcion" type="text" name="Description" placeholder="Descripción del proveedor" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">
                 <i class="bi bi-check-lg"></i> Guardar Proveedor
@@ -138,7 +138,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Editar Proveedor</h5>
-            <button onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar edición de proveedor" onclick="document.getElementById('modalEditar').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -148,19 +148,19 @@
                 <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorEditarProveedorTexto"></span>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre</label>
+                <label for="editNombre" class="form-label-dark">Nombre</label>
                 <input type="text" name="Name" id="editNombre" required class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Teléfono</label>
+                <label for="editTelefono" class="form-label-dark">Teléfono</label>
                 <input type="text" name="Phone" id="editTelefono" required class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Dirección</label>
+                <label for="editDireccion" class="form-label-dark">Dirección</label>
                 <input type="text" name="Address" id="editDireccion" required class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (Opcional)</label>
+                <label for="editDescripcion" class="form-label-dark">Descripción (Opcional)</label>
                 <input type="text" name="Description" id="editDescripcion" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">
