@@ -67,12 +67,15 @@
 
 <!-- BARRA DE BÚSQUEDA -->
 <div class="search-bar-row">
+    <label class="visually-hidden" for="searchInput">Buscar producto</label>
     <input type="text" id="searchInput" placeholder=" Buscar Producto..." class="control-glow search-input-dark" />
+    <label class="visually-hidden" for="filterTipo">Filtrar por tipo</label>
     <select id="filterTipo" class="control-glow">
         <option value="">Todos los tipos</option>
         <option value="Producto">Producto</option>
         <option value="Servicio">Servicio</option>
     </select>
+    <label class="visually-hidden" for="filterEstado">Filtrar por estado</label>
     <select id="filterEstado" class="control-glow">
         <option value="">Todos los estados</option>
         <option value="Activo">Activo</option>
@@ -149,7 +152,7 @@
                         </td>
                         <td>
                             <div class="row-actions">
-                                <button onclick="abrirEditarProducto(this)"
+                                <button type="button" aria-label="Editar @product.Name" onclick="abrirEditarProducto(this)"
                                         data-id="@product.ProductId"
                                         data-nombre="@product.Name"
                                         data-descripcion="@product.Description"
@@ -165,7 +168,7 @@
                                 </button>
                                 <form method="post" action="/Product/ToggleStatus/@product.ProductId" class="m-0">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn-icon-action btn-icon-action--muted">
+                                    <button type="submit" aria-label="Cambiar estado de @product.Name" class="btn-icon-action btn-icon-action--muted">
                                         @if (product.IsActive)
                                         {
                                             <i class="bi bi-eye-slash-fill"></i>
@@ -178,7 +181,7 @@
                                 </form>
                                 <form method="post" action="/Product/Delete/@product.ProductId" class="m-0" id="formEliminar_@product.ProductId">
                                     @Html.AntiForgeryToken()
-                                    <button type="button" onclick="confirmarEliminar('formEliminar_@product.ProductId')" class="btn-icon-action btn-icon-action--danger">
+                                    <button type="button" aria-label="Eliminar @product.Name" onclick="confirmarEliminar('formEliminar_@product.ProductId')" class="btn-icon-action btn-icon-action--danger">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
@@ -224,7 +227,7 @@
                         <span class="cat-item-id">#@cat.CategoryId</span>
                         <span class="cat-item-name">@cat.Name</span>
                         <div class="cat-item-actions">
-                            <button onclick="abrirEditarCategoria(this)"
+                            <button type="button" aria-label="Editar categoría @cat.Name" onclick="abrirEditarCategoria(this)"
                                     data-id="@cat.CategoryId"
                                     data-nombre="@cat.Name"
                                     data-descripcion="@cat.Description"
@@ -233,7 +236,7 @@
                             </button>
                             <form method="post" action="/Category/Delete/@cat.CategoryId" class="m-0" id="formEliminarCat_@cat.CategoryId">
                                 @Html.AntiForgeryToken()
-                                <button type="button" onclick="confirmarEliminar('formEliminarCat_@cat.CategoryId', '¿Eliminar esta categoría?')" class="btn-icon-xs btn-icon-xs--danger">
+                                <button type="button" aria-label="Eliminar categoría @cat.Name" onclick="confirmarEliminar('formEliminarCat_@cat.CategoryId', '¿Eliminar esta categoría?')" class="btn-icon-xs btn-icon-xs--danger">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>
@@ -251,7 +254,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Agregar Producto</h5>
-            <button onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar formulario de producto" onclick="document.getElementById('modalAgregar').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -261,36 +264,36 @@
                 <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearProductoTexto"></span>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre del producto</label>
-                <input type="text" name="Name" required placeholder="Ej: Cuaderno A4" class="form-input-dark" />
+                <label for="crearProductoNombre" class="form-label-dark">Nombre del producto</label>
+                <input id="crearProductoNombre" type="text" name="Name" required placeholder="Ej: Cuaderno A4" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (opcional)</label>
-                <input type="text" name="Description" placeholder="Descripción del producto" class="form-input-dark" />
+                <label for="crearProductoDescripcion" class="form-label-dark">Descripción (opcional)</label>
+                <input id="crearProductoDescripcion" type="text" name="Description" placeholder="Descripción del producto" class="form-input-dark" />
             </div>
             <div class="form-grid-2">
                 <div>
-                    <label class="form-label-dark">Precio venta (S/)</label>
-                    <input type="number" name="SalePrice" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+                    <label for="crearProductoPrecioVenta" class="form-label-dark">Precio venta (S/)</label>
+                    <input id="crearProductoPrecioVenta" type="number" name="SalePrice" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
                 </div>
                 <div id="precioCompraField">
-                    <label class="form-label-dark">Precio compra (S/)</label>
-                    <input type="number" name="PurchasePrice" step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+                    <label for="crearProductoPrecioCompra" class="form-label-dark">Precio compra (S/)</label>
+                    <input id="crearProductoPrecioCompra" type="number" name="PurchasePrice" step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
                 </div>
             </div>
             <div id="stockField" class="form-grid-2">
                 <div>
-                    <label class="form-label-dark">Stock inicial</label>
-                    <input type="number" name="Stock" min="0" placeholder="0" class="form-input-dark" />
+                    <label for="crearProductoStock" class="form-label-dark">Stock inicial</label>
+                    <input id="crearProductoStock" type="number" name="Stock" min="0" placeholder="0" class="form-input-dark" />
                 </div>
                 <div>
-                    <label class="form-label-dark">Stock mínimo (alerta)</label>
-                    <input type="number" name="MinimumStock" min="0" value="5" class="form-input-dark" />
+                    <label for="crearProductoStockMinimo" class="form-label-dark">Stock mínimo (alerta)</label>
+                    <input id="crearProductoStockMinimo" type="number" name="MinimumStock" min="0" value="5" class="form-input-dark" />
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Categoría</label>
-                <select name="CategoryId" required class="form-input-dark">
+                <label for="crearProductoCategoria" class="form-label-dark">Categoría</label>
+                <select id="crearProductoCategoria" name="CategoryId" required class="form-input-dark">
                     <option value="">-- Seleccionar categoría --</option>
                     @foreach (var cat in ViewBag.Categories)
                     {
@@ -299,8 +302,8 @@
                 </select>
             </div>
             <div id="proveedorField" class="form-group-dark">
-                <label class="form-label-dark">Proveedor (opcional)</label>
-                <select name="SupplierId" class="form-input-dark">
+                <label for="crearProductoProveedor" class="form-label-dark">Proveedor (opcional)</label>
+                <select id="crearProductoProveedor" name="SupplierId" class="form-input-dark">
                     <option value="">-- Sin proveedor --</option>
                     @foreach (var sup in ViewBag.Suppliers)
                     {
@@ -320,7 +323,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Agregar Servicio</h5>
-            <button onclick="document.getElementById('modalAgregarServicio').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar formulario de servicio" onclick="document.getElementById('modalAgregarServicio').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -331,20 +334,20 @@
                 <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorCrearServicioTexto"></span>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre del servicio</label>
-                <input type="text" name="Name" required placeholder="Ej: Impresiones color" class="form-input-dark" />
+                <label for="crearServicioNombre" class="form-label-dark">Nombre del servicio</label>
+                <input id="crearServicioNombre" type="text" name="Name" required placeholder="Ej: Impresiones color" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (opcional)</label>
-                <input type="text" name="Description" placeholder="Descripción del servicio" class="form-input-dark" />
+                <label for="crearServicioDescripcion" class="form-label-dark">Descripción (opcional)</label>
+                <input id="crearServicioDescripcion" type="text" name="Description" placeholder="Descripción del servicio" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Precio venta (S/)</label>
-                <input type="number" name="SalePrice" required step="0.01" min="0.01" placeholder="0.00" class="form-input-dark" />
+                <label for="crearServicioPrecioVenta" class="form-label-dark">Precio venta (S/)</label>
+                <input id="crearServicioPrecioVenta" type="number" name="SalePrice" required step="0.01" min="0.01" placeholder="0.00" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Categoría</label>
-                <select name="CategoryId" required class="form-input-dark">
+                <label for="crearServicioCategoria" class="form-label-dark">Categoría</label>
+                <select id="crearServicioCategoria" name="CategoryId" required class="form-input-dark">
                     <option value="">-- Seleccionar categoría --</option>
                     @foreach (var cat in ViewBag.Categories)
                     {
@@ -364,19 +367,19 @@
     <div class="modal-card modal-card--xs">
         <div class="modal-header">
             <h5 class="modal-title">Nueva Categoría</h5>
-            <button onclick="document.getElementById('modalNuevaCategoria').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar formulario de categoría" onclick="document.getElementById('modalNuevaCategoria').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <form method="post" action="/Category/Create">
             @Html.AntiForgeryToken()
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre</label>
-                <input type="text" name="Name" required placeholder="Ej: Útiles escolares" class="form-input-dark" />
+                <label for="nuevaCategoriaNombre" class="form-label-dark">Nombre</label>
+                <input id="nuevaCategoriaNombre" type="text" name="Name" required placeholder="Ej: Útiles escolares" class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (opcional)</label>
-                <input type="text" name="Description" placeholder="Descripción de la categoría" class="form-input-dark" />
+                <label for="nuevaCategoriaDescripcion" class="form-label-dark">Descripción (opcional)</label>
+                <input id="nuevaCategoriaDescripcion" type="text" name="Description" placeholder="Descripción de la categoría" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">
                 <i class="bi bi-check-lg"></i> Guardar Categoría
@@ -390,18 +393,18 @@
     <div class="modal-card modal-card--xs">
         <div class="modal-header">
             <h5 class="modal-title">Editar Categoría</h5>
-            <button onclick="document.getElementById('modalEditarCategoria').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar edición de categoría" onclick="document.getElementById('modalEditarCategoria').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <form method="post" id="formEditarCategoria">
             @Html.AntiForgeryToken()
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre</label>
+                <label for="editCategoriaNombre" class="form-label-dark">Nombre</label>
                 <input type="text" name="Name" id="editCategoriaNombre" required class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (opcional)</label>
+                <label for="editCategoriaDescripcion" class="form-label-dark">Descripción (opcional)</label>
                 <input type="text" name="Description" id="editCategoriaDescripcion" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">
@@ -416,7 +419,7 @@
     <div class="modal-card modal-card--lg">
         <div class="modal-header">
             <h5 class="modal-title">Editar Producto</h5>
-            <button onclick="document.getElementById('modalEditarProducto').style.display='none'" class="modal-close-btn">
+            <button type="button" aria-label="Cerrar edición de producto" onclick="document.getElementById('modalEditarProducto').style.display='none'" class="modal-close-btn">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -426,35 +429,35 @@
                 <i class="bi bi-exclamation-triangle-fill"></i> <span id="errorEditarProductoTexto"></span>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Nombre del producto</label>
+                <label for="editNombre" class="form-label-dark">Nombre del producto</label>
                 <input type="text" name="Name" id="editNombre" required class="form-input-dark" />
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Descripción (opcional)</label>
+                <label for="editDescripcion" class="form-label-dark">Descripción (opcional)</label>
                 <input type="text" name="Description" id="editDescripcion" class="form-input-dark" />
             </div>
             <div class="form-grid-2">
                 <div>
-                    <label class="form-label-dark">Precio venta (S/)</label>
+                    <label for="editPrecioVenta" class="form-label-dark">Precio venta (S/)</label>
                     <input type="number" name="SalePrice" id="editPrecioVenta" required step="0.01" min="0" class="form-input-dark" />
                 </div>
                 <div id="editPrecioCompraField">
-                    <label class="form-label-dark">Precio compra (S/)</label>
+                    <label for="editPrecioCompra" class="form-label-dark">Precio compra (S/)</label>
                     <input type="number" name="PurchasePrice" id="editPrecioCompra" required step="0.01" min="0" class="form-input-dark" />
                 </div>
             </div>
             <div id="editStockField" class="form-grid-2">
                 <div>
-                    <label class="form-label-dark">Stock</label>
+                    <label for="editStock" class="form-label-dark">Stock</label>
                     <input type="number" name="Stock" id="editStock" min="0" class="form-input-dark" />
                 </div>
                 <div>
-                    <label class="form-label-dark">Stock mínimo</label>
+                    <label for="editStockMinimo" class="form-label-dark">Stock mínimo</label>
                     <input type="number" name="MinimumStock" id="editStockMinimo" min="0" class="form-input-dark" />
                 </div>
             </div>
             <div class="form-group-dark">
-                <label class="form-label-dark">Categoría</label>
+                <label for="editCategoria" class="form-label-dark">Categoría</label>
                 <select name="CategoryId" id="editCategoria" required class="form-input-dark">
                     <option value="">-- Seleccionar categoría --</option>
                     @foreach (var cat in ViewBag.Categories)
@@ -464,7 +467,7 @@
                 </select>
             </div>
             <div id="editProveedorField" class="form-group-dark">
-                <label class="form-label-dark">Proveedor (opcional)</label>
+                <label for="editProveedor" class="form-label-dark">Proveedor (opcional)</label>
                 <select name="SupplierId" id="editProveedor" class="form-input-dark">
                     <option value="">-- Sin proveedor --</option>
                     @foreach (var sup in ViewBag.Suppliers)
