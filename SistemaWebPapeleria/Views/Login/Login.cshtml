@@ -4,7 +4,7 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -65,17 +65,19 @@
                 </div>
                 <form asp-controller="Login" asp-action="Login" method="post" autocomplete="off">
                     <div class="mb-3">
-                        <label>Correo Electrónico</label>
+                        <label for="Email">Correo Electrónico</label>
                         <div class="position-relative">
                             <input class="form-control input-with-icon" type="email" placeholder="Ingrese su correo" required asp-for="Email" />
                             <i class="bi bi-person-fill input-icon"></i>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label>Contraseña</label>
+                        <label for="loginPassword">Contraseña</label>
                         <div class="position-relative">
                             <input class="form-control input-with-icon" type="password" id="loginPassword" placeholder="Ingrese su contraseña" required asp-for="Password" />
-                            <i id="toggleLoginPassword" class="bi bi-eye-fill input-icon input-icon-clickable" onclick="togglePassword('loginPassword', this)"></i>
+                            <button type="button" id="toggleLoginPassword" class="input-icon input-icon-clickable border-0 bg-transparent p-0" aria-label="Mostrar u ocultar contraseña" onclick="togglePassword('loginPassword', this.firstElementChild)">
+                                <i class="bi bi-eye-fill" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="d-grid mb-3">

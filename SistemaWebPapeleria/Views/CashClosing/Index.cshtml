@@ -225,8 +225,8 @@
         <form method="post" action="/CashClosing/Open">
             @Html.AntiForgeryToken()
             <div class="form-group-dark">
-                <label class="form-label-dark">Monto Inicial (S/)</label>
-                <input type="number" name="initialAmount" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
+                <label for="montoInicialAbrir" class="form-label-dark">Monto Inicial (S/)</label>
+                <input type="number" id="montoInicialAbrir" name="initialAmount" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">
                 <i class="bi bi-cash-stack"></i> Abrir Caja
@@ -248,7 +248,7 @@
             @Html.AntiForgeryToken()
             <input type="hidden" id="editCajaId" name="id" value="" />
             <div class="mb-20">
-                <label class="form-label-dark">Nuevo Monto Inicial (S/)</label>
+                <label for="editMontoInicial" class="form-label-dark">Nuevo Monto Inicial (S/)</label>
                 <input type="number" id="editMontoInicial" name="initialAmount" required step="0.01" min="0" placeholder="0.00" class="form-input-dark" />
             </div>
             <button type="submit" class="btn-gradient-cta btn-block-lg">

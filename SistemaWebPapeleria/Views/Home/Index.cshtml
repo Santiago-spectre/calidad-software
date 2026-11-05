@@ -11,7 +11,7 @@
 @if (Model.UserRole == "Administrador")
 {
     <div class="filter-end-row mb-25">
-        <select id="filtroUsuario" onchange="aplicarFiltro()" class="control-plain">
+        <select id="filtroUsuario" aria-label="Filtrar por usuario" onchange="aplicarFiltro()" class="control-plain">
             <option value="">Todos</option>
             @foreach (var user in ViewBag.Usuarios)
             {
