@@ -129,7 +129,7 @@ async function confirmarDevolucion() {
     const items = devItemsActual
         .map((i, index) => ({
             productId: i.productId,
-            quantity: parseInt(document.getElementById('devCantidad_' + index).value) || 0
+            quantity: Number.parseInt(document.getElementById('devCantidad_' + index).value, 10) || 0
         }))
         .filter(i => i.quantity > 0);
 

@@ -6,7 +6,9 @@
     if (!data.abierta) {
         document.getElementById('modalCajaVentas').style.display = 'flex';
     }
-})();
+})().catch(error => {
+    console.error('Error al verificar el estado de la caja:', error);
+});
 
 let carrito = [];
 const porPagina = 35;
@@ -109,7 +111,7 @@ function quitarDelCarrito(id) {
 function cambiarCantidad(id, valor) {
     const item = carrito.find(c => c.productId === id);
     if (item) {
-        item.cantidad = Math.max(1, parseInt(valor) || 1);
+        item.cantidad = Math.max(1, Number.parseInt(valor, 10) || 1);
     }
     renderCarrito();
 }
@@ -118,9 +120,9 @@ function cambiarPrecio(id, valor) {
     const item = carrito.find(c => c.productId === id);
     if (!item) return;
 
-    const nuevoPrecio = parseFloat(valor);
+    const nuevoPrecio = Number.parseFloat(valor);
     const input = document.getElementById('precioInput_' + id);
-    const esValido = valor !== '' && !isNaN(nuevoPrecio) && nuevoPrecio > 0;
+    const esValido = valor !== '' && !Number.isNaN(nuevoPrecio) && nuevoPrecio > 0;
 
     item.precioInvalido = !esValido;
 
@@ -162,7 +164,7 @@ function renderCarrito() {
 
 function actualizarTotales() {
     const bruto = carrito.reduce((sum, i) => sum + (i.salePrice * i.cantidad), 0);
-    const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+    const descuento = Number.parseFloat(document.getElementById('descuento').value) || 0;
     const total = Math.max(0, bruto - descuento);
 
     // IGV incluido en el precio: opGravada = total / 1.18, igv = total - opGravada
@@ -193,7 +195,7 @@ async function registrarVenta() {
     for (const item of carrito) {
         const inputQty = document.querySelector(`input.cart-item-qty[onchange*="${item.productId}"]`);
         if (inputQty) {
-            const valorActual = parseInt(inputQty.value);
+            const valorActual = Number.parseInt(inputQty.value, 10);
             if (!valorActual || valorActual <= 0) {
                 showToast(`La cantidad de "${item.name}" debe ser mayor a cero.`, 'error');
                 return;
@@ -204,7 +206,7 @@ async function registrarVenta() {
 
     const datos = {
         paymentMethod: document.getElementById('metodoPago').value,
-        discount: parseFloat(document.getElementById('descuento').value) || 0,
+        discount: Number.parseFloat(document.getElementById('descuento').value) || 0,
         receiptIssued: document.getElementById('emitirComprobante').checked,
         items: carrito.map(c => ({ productId: c.productId, quantity: c.cantidad, unitPrice: c.salePrice }))
     };

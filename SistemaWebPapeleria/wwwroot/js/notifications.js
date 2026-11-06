@@ -10,7 +10,7 @@ function toggleNotificaciones() {
     } else {
         dropdown.classList.add('show');
         trigger?.setAttribute('aria-expanded', 'true');
-        cargarNotificaciones();
+        void cargarNotificaciones();
     }
 }
 
@@ -69,25 +69,25 @@ async function cargarNotificaciones() {
 async function marcarLeida(id, elemento) {
     elemento.classList.remove('unread');
     await fetch('/Notification/MarcarLeida?id=' + id, { method: 'POST', headers: csrfHeader() });
-    cargarNotificaciones();
+    void cargarNotificaciones();
 }
 
 async function eliminarNotificacion(id, boton) {
     await fetch('/Notification/Eliminar?id=' + id, { method: 'POST', headers: csrfHeader() });
     boton.closest('.notif-item').remove();
-    cargarNotificaciones();
+    void cargarNotificaciones();
 }
 
 async function eliminarTodasNotificaciones() {
     await fetch('/Notification/EliminarTodas', { method: 'POST', headers: csrfHeader() });
-    cargarNotificaciones();
+    void cargarNotificaciones();
 }
 
 async function marcarTodasLeidas() {
     await fetch('/Notification/MarcarTodasLeidas', { method: 'POST', headers: csrfHeader() });
-    cargarNotificaciones();
+    void cargarNotificaciones();
 }
 
 // Carga inicial y refresco automático cada 30 segundos
-cargarNotificaciones();
-setInterval(cargarNotificaciones, 30000);
+void cargarNotificaciones();
+setInterval(() => { void cargarNotificaciones(); }, 30000);
