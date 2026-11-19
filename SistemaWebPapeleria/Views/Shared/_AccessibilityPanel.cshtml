@@ -1,0 +1,36 @@
+﻿<button id="btnAccesibilidad"
+        type="button"
+        class="accessibility-trigger"
+        aria-controls="panelAccesibilidad"
+        aria-expanded="false">
+    <i class="bi bi-universal-access" aria-hidden="true"></i>
+    <span>Accesibilidad</span>
+</button>
+
+<section id="panelAccesibilidad"
+         class="accessibility-panel"
+         role="region"
+         aria-labelledby="tituloAccesibilidad"
+         hidden>
+    <header class="accessibility-panel-header">
+        <h2 id="tituloAccesibilidad">Opciones de accesibilidad</h2>
+        <button id="btnCerrarAccesibilidad"
+                type="button"
+                aria-label="Cerrar opciones de accesibilidad">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+    </header>
+
+    <p>Personaliza la presentación y el uso del sistema.</p>
+
+    <fieldset class="accessibility-group">
+        <legend>Lectura</legend>
+
+        <label for="accessibilityTextSize">Tamaño del texto</label>
+        <select id="accessibilityTextSize" class="accessibility-control">
+            <option value="normal">Normal</option>
+            <option value="large">Grande</option>
+            <option value="larger">Muy grande</option>
+        </select>
+    </fieldset>
+</section>

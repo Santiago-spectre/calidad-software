@@ -45,7 +45,7 @@ body {
     .sidebar-logo span {
         color: var(--color-text);
         font-weight: 700;
-        font-size: 13px;
+        font-size: calc(13px * var(--a11y-text-scale, 1));
         letter-spacing: 1.5px;
         text-transform: uppercase;
     }
@@ -65,7 +65,7 @@ body {
     border-radius: 10px;
     color: rgba(255,255,255,0.5);
     text-decoration: none;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     transition: all 0.2s ease;
 }
 
@@ -81,7 +81,7 @@ body {
     }
 
     .menu-item i {
-        font-size: 18px;
+        font-size: calc(18px * var(--a11y-text-scale, 1));
     }
 
 .sidebar-bottom {
@@ -102,7 +102,7 @@ body {
 
     .sidebar-profile span {
         color: var(--color-text);
-        font-size: 13px;
+        font-size: calc(13px * var(--a11y-text-scale, 1));
         font-weight: 600;
     }
 
@@ -114,7 +114,7 @@ body {
     border-radius: 10px;
     color: rgba(255,255,255,0.5);
     text-decoration: none;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     transition: all 0.2s ease;
 }
 
@@ -154,14 +154,14 @@ select {
 
 .topbar-bienvenida h4 {
     color: var(--color-text);
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
     font-weight: 700;
     margin: 0;
 }
 
 .topbar-bienvenida p {
     color: rgba(255,255,255,0.4);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -194,7 +194,7 @@ select {
     right: -4px;
     background: var(--color-danger);
     color: #fff;
-    font-size: 10px;
+    font-size: calc(10px * var(--a11y-text-scale, 1));
     font-weight: 700;
     border-radius: 50%;
     min-width: 16px;
@@ -255,7 +255,7 @@ select {
 
 .bell-dropdown-header span {
     color: var(--color-text);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     font-weight: 700;
 }
 
@@ -263,7 +263,7 @@ select {
     background: none;
     border: none;
     color: var(--color-accent-light);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
     cursor: pointer;
 }
 
@@ -294,20 +294,20 @@ select {
 
 .notif-item p.title {
     color: var(--color-text);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     font-weight: 600;
     margin-bottom: 3px;
 }
 
 .notif-item p.msg {
     color: rgba(255,255,255,0.5);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     margin-bottom: 4px;
 }
 
 .notif-item p.time {
     color: rgba(255,255,255,0.3);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .topbar-usuario {
@@ -318,13 +318,13 @@ select {
 
     .topbar-usuario span {
         color: var(--color-text);
-        font-size: 13px;
+        font-size: calc(13px * var(--a11y-text-scale, 1));
         font-weight: 600;
     }
 
 .sidebar-role {
     color: var(--color-primary);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
     margin: 0;
@@ -336,7 +336,7 @@ select {
 
 .bell-icon {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 20px;
+    font-size: calc(20px * var(--a11y-text-scale, 1));
 }
 
 .bell-dropdown-actions {
@@ -346,19 +346,19 @@ select {
 
 .dropdown-loading-text {
     color: rgba(255, 255, 255, 0.3);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     text-align: center;
     padding: 20px;
 }
 
 .icon-accent-lg {
     color: var(--color-primary);
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
 }
 
 .icon-muted-xs {
     color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .bell-dropdown--narrow {
@@ -372,7 +372,7 @@ select {
 
 .text-white-sm {
     color: var(--color-text);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .notif-item--danger {
@@ -384,7 +384,7 @@ select {
 }
 
 .fs-13 {
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .sidebar-brand-footer {

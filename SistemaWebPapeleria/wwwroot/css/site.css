@@ -19,14 +19,14 @@
 }
 
 html {
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     position: relative;
     min-height: 100%;
 }
 
 @media (min-width: 768px) {
     html {
-        font-size: 16px;
+        font-size: calc(16px * var(--a11y-text-scale, 1));
     }
 }
 
@@ -95,7 +95,7 @@ button:disabled {
 .section-title {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 18px;
+    font-size: calc(18px * var(--a11y-text-scale, 1));
     margin: 0;
 }
 
@@ -105,7 +105,7 @@ button:disabled {
 
 .modal-text-muted {
     color: rgba(255, 255, 255, 0.45);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     margin-bottom: 25px;
 }
 
@@ -113,7 +113,7 @@ button:disabled {
     background: none;
     border: none;
     color: var(--color-text-muted);
-    font-size: 20px;
+    font-size: calc(20px * var(--a11y-text-scale, 1));
     cursor: pointer;
 }
 
@@ -140,7 +140,7 @@ button:disabled {
 
 .form-label-dark {
     color: var(--color-text-muted);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     letter-spacing:1px;
     text-transform: uppercase;
     display: block;
@@ -154,7 +154,7 @@ button:disabled {
     border: 1px solid var(--color-border);
     border-radius: 10px;
     color: var(--color-text);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     outline: none;
 }
 
@@ -177,7 +177,7 @@ button:disabled {
     top: 50%;
     transform: translateY(-50%);
     color: var(--color-text-muted);
-    font-size: 16px;
+    font-size: calc(16px * var(--a11y-text-scale, 1));
     cursor: pointer;
 }
 
@@ -211,7 +211,7 @@ button:disabled {
     border: 1px solid var(--color-border);
     border-radius: 10px;
     color: var(--color-text);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     font-weight: 600;
     cursor: pointer;
 }
@@ -220,12 +220,12 @@ button:disabled {
     width: 100%;
     padding: 13px;
     letter-spacing: 1px;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .icon-danger-lg {
     color: var(--color-danger);
-    font-size: 26px;
+    font-size: calc(26px * var(--a11y-text-scale, 1));
 }
 
 .btn-flex-action {
@@ -235,7 +235,7 @@ button:disabled {
 
 .btn-inline-action {
     padding: 0 18px;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 /* Encabezado de página */
@@ -248,7 +248,7 @@ button:disabled {
 
 .page-eyebrow {
     color: rgba(255, 255, 255, 0.4);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     letter-spacing:1px;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -257,7 +257,7 @@ button:disabled {
 .page-title {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
 }
 
 .page-actions {
@@ -267,7 +267,7 @@ button:disabled {
 
 .btn-pill-icon {
     padding: 10px 20px;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     display: inline-flex;
     align-items: center;
@@ -312,14 +312,14 @@ button:disabled {
 
 .stat-label {
     color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 8px;
 }
 
 .stat-value {
-    font-size: 28px;
+    font-size: calc(28px * var(--a11y-text-scale, 1));
     font-weight: 700;
 }
 
@@ -336,7 +336,7 @@ button:disabled {
 .icon-box--warning { background: rgba(251, 191, 36, 0.15); }
 .icon-box--danger { background: rgba(248, 113, 113, 0.15); }
 
-.stat-icon { font-size: 22px; }
+.stat-icon { font-size: calc(22px * var(--a11y-text-scale, 1)); }
 
 /* Controles de búsqueda/filtro */
 .search-bar-row {
@@ -353,7 +353,7 @@ button:disabled {
     box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.1);
     border-radius: 10px;
     color: var(--color-text);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     outline: none;
 }
 
@@ -374,7 +374,7 @@ button:disabled {
 
 .data-table th {
     color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 10px 15px;
@@ -392,25 +392,25 @@ button:disabled {
 .table-empty-cell {
     text-align: center;
     color: rgba(255, 255, 255, 0.3);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 40px;
 }
 
 .table-empty-icon {
-    font-size: 32px;
+    font-size: calc(32px * var(--a11y-text-scale, 1));
     display: block;
     margin-bottom: 10px;
 }
 
-.text-white-13 { color: var(--color-text); font-size: 13px; }
-.text-muted-13 { color: rgba(255, 255, 255, 0.6); font-size: 13px; }
-.text-muted-13-light {color: rgba(255, 255, 255, 0.3); font-size: 13px; }
-.text-success-13-bold { color: var(--color-success); font-size: 13px; font-weight: 700; }
+.text-white-13 { color: var(--color-text); font-size: calc(13px * var(--a11y-text-scale, 1)); }
+.text-muted-13 { color: rgba(255, 255, 255, 0.6); font-size: calc(13px * var(--a11y-text-scale, 1)); }
+.text-muted-13-light {color: rgba(255, 255, 255, 0.3); font-size: calc(13px * var(--a11y-text-scale, 1)); }
+.text-success-13-bold { color: var(--color-success); font-size: calc(13px * var(--a11y-text-scale, 1)); font-weight: 700; }
 
 .pill-badge {
     padding: 3px 10px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .pill-badge--accent { background: rgba(var(--color-primary-rgb), 0.15); color: var(--color-primary); }
@@ -422,7 +422,7 @@ button:disabled {
 .btn-icon-action {
     padding: 6px 12px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     border: none;
     cursor: pointer;
 }
@@ -442,7 +442,7 @@ button:disabled {
     padding: 12px 18px;
     border-radius: 10px;
     margin-bottom: 18px;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .modal-card--lg {
@@ -488,7 +488,7 @@ button:disabled {
 }
 
 .section-title--sm {
-    font-size: 16px;
+    font-size: calc(16px * var(--a11y-text-scale, 1));
 }
 
 .data-panel {
@@ -515,7 +515,7 @@ button:disabled {
     border: 1px solid var(--color-border);
     border-radius: 10px;
     color: var(--color-text);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     outline: none;
 }
 
@@ -532,7 +532,7 @@ button:disabled {
     color: var(--color-danger);
     padding: 3px 10px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .pill-badge--py4 {
@@ -543,7 +543,7 @@ button:disabled {
 
 .text-muted-11 {
     color: rgba(255, 255, 255, 0.3);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .empty-state {
@@ -552,7 +552,7 @@ button:disabled {
 }
 
 .empty-state-icon {
-    font-size: 40px;
+    font-size: calc(40px * var(--a11y-text-scale, 1));
     color: rgba(var(--color-primary-rgb),0.4);
     display: block;
     margin-bottom: 12px;
@@ -560,12 +560,12 @@ button:disabled {
 
 .empty-state-text {
     color: rgba(255,255,255,0.3);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .text-muted-13-dim {
     color: rgba(255,255,255,0.4);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .filter-end-row {
@@ -582,11 +582,11 @@ button:disabled {
 }
 
 .fs-32 {
-    font-size: 32px;
+    font-size: calc(32px * var(--a11y-text-scale, 1));
 }
 
 .fs-40 {
-    font-size: 40px;
+    font-size: calc(40px * var(--a11y-text-scale, 1));
 }
 
 .alert-toast-error,
@@ -594,7 +594,7 @@ button:disabled {
     padding: 12px 18px;
     border-radius: 10px;
     margin-bottom: 20px;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     border-width: 1px;
     border-style: solid;
 }
@@ -634,13 +634,13 @@ button:disabled {
 .error-title {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 28px;
+    font-size: calc(28px * var(--a11y-text-scale, 1));
     margin-bottom: 10px;
 }
 
 .error-text {
     color: rgba(255,255,255,0.45);
-    font-size: 15px;
+    font-size: calc(15px * var(--a11y-text-scale, 1));
     margin-bottom: 30px;
     max-width: 400px;
     line-height: 1.6;
@@ -648,7 +648,7 @@ button:disabled {
 
 .error-id-text {
     color: rgba(255,255,255,0.25);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     margin-bottom: 20px;
 }
 
@@ -658,7 +658,7 @@ button:disabled {
     padding: 12px 30px;
     border-radius: 10px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     text-decoration: none;
 }
 

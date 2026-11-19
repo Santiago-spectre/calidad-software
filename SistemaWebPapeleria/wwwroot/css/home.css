@@ -9,7 +9,7 @@
 .panel-title {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -32,7 +32,7 @@
 
 .empty-list-text {
     color: rgba(255,255,255,0.3);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     text-align: center;
     padding: 20px 0;
 }
@@ -46,7 +46,7 @@
 .rank-number {
     color: var(--color-primary);
     font-weight: 700;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .stack-gap-12 {
@@ -63,12 +63,12 @@
 .text-white-bold-13 {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .text-muted-11-alt {
     color: rgba(255,255,255,0.35);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 .mt-6 {
@@ -78,12 +78,12 @@
 .table-empty-cell--sm {
     text-align: center;
     color: rgba(255,255,255,0.3);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 30px;
 }
 
 .table-empty-icon--sm {
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
     display: block;
     margin-bottom: 8px;
 }
@@ -106,12 +106,12 @@
 
 .toast-denied-icon {
     color: var(--color-danger);
-    font-size: 22px;
+    font-size: calc(22px * var(--a11y-text-scale, 1));
 }
 
 .toast-denied-text {
     color: var(--color-text);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .toast-denied-close {
@@ -119,7 +119,7 @@
     border: none;
     color: rgba(255,255,255,0.4);
     cursor: pointer;
-    font-size: 18px;
+    font-size: calc(18px * var(--a11y-text-scale, 1));
     margin-left: 8px;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .modal-welcome-icon {
-    font-size: 60px;
+    font-size: calc(60px * var(--a11y-text-scale, 1));
     display: block;
     margin-bottom: 15px;
 }
@@ -174,12 +174,12 @@
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .ganancia-neta-badge {
     padding: 10px 20px;
     border-radius: 10px;
-    font-size: 20px;
+    font-size: calc(20px * var(--a11y-text-scale, 1));
     font-weight: 700;
 }

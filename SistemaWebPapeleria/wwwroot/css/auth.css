@@ -23,7 +23,7 @@ body {
 
 label {
     color: rgba(255,255,255,0.6);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -52,7 +52,7 @@ input.form-control {
     border: none;
     border-radius: 10px;
     padding: 12px;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     letter-spacing: 1.5px;
     text-transform: uppercase;
     font-weight: 600;
@@ -66,7 +66,7 @@ input.form-control {
 
 .back-link {
     color: rgba(99,102,241,0.8);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     text-decoration: none;
 }
 
@@ -105,13 +105,13 @@ input.form-control {
 .login-left h2 {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 28px;
+    font-size: calc(28px * var(--a11y-text-scale, 1));
     margin-bottom: 6px;
 }
 
 .login-left p.tagline {
     color: rgba(255,255,255,0.5);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     margin-bottom: 35px;
 }
 
@@ -131,18 +131,18 @@ input.form-control {
     text-align: center;
 }
 
-.login-feature-card i {
-    font-size: 26px;
-    color: var(--color-cta);
-    margin-bottom: 10px;
-    display: block;
-}
+    .login-feature-card i {
+        font-size: calc(26px * var(--a11y-text-scale, 1));
+        color: var(--color-cta);
+        margin-bottom: 10px;
+        display: block;
+    }
 
-.login-feature-card span {
-    color: rgba(255,255,255,0.7);
-    font-size: 12.5px;
-    font-weight: 600;
-}
+    .login-feature-card span {
+        color: rgba(255,255,255,0.7);
+        font-size: calc(12.5px * var(--a11y-text-scale, 1));
+        font-weight: 600;
+    }
 
 .login-right {
     flex: 1;
@@ -152,10 +152,10 @@ input.form-control {
 
 .alert-success-glass {
     background: rgba(52, 211, 153, 0.1);
-    border:1px solid rgba(52, 211, 153, 0.3);
+    border: 1px solid rgba(52, 211, 153, 0.3);
     border-radius: 10px;
     color: #34d399;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 12px 15px;
     margin-bottom: 15px;
     text-align: center;
@@ -163,12 +163,12 @@ input.form-control {
 
 .login-title {
     letter-spacing: 2px;
-    font-size: 28px;
+    font-size: calc(28px * var(--a11y-text-scale, 1));
 }
 
 .login-subtitle {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 16px;
+    font-size: calc(16px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
 }
 
@@ -192,7 +192,7 @@ input.form-control {
 
 .login-description {
     color: rgba(255, 255, 255, 0.4);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     line-height: 1.5;
 }
 
@@ -205,7 +205,7 @@ input.form-control {
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 16px;
+    font-size: calc(16px * var(--a11y-text-scale, 1));
     color: rgba(255, 255, 255, 0.3);
 }
 
@@ -216,7 +216,7 @@ input.form-control {
 
 .login-forgot-link {
     color: rgba(var(--color-primary-rgb), 0.8);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     letter-spacing: 0.5px;
 }
 
@@ -252,7 +252,7 @@ input.form-control {
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
 }
 
 .step-header {
@@ -281,12 +281,12 @@ input.form-control {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    font-size: 22px;
+    font-size: calc(22px * var(--a11y-text-scale, 1));
 }
 
 .step-subtitle {
     color: rgba(255,255,255,0.45);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     margin-top: 8px;
 }
 
@@ -295,7 +295,7 @@ input.form-control {
     border: 1px solid rgba(248,113,113,0.3);
     border-radius: 10px;
     color: var(--color-danger);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 12px 15px;
     margin-bottom: 15px;
 }
@@ -305,13 +305,13 @@ input.form-control {
     border: 1px solid rgba(var(--color-primary-rgb),0.3);
     border-radius: 10px;
     color: var(--color-accent-light);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 12px 15px;
     margin-bottom: 15px;
 }
 
 .code-input {
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
     letter-spacing: 8px;
     font-weight: 700;
 }
@@ -334,7 +334,7 @@ input.form-control {
 }
 
 .step-icon--lg {
-    font-size: 32px;
+    font-size: calc(32px * var(--a11y-text-scale, 1));
 }
 
 .step-subtitle--wide {
@@ -343,5 +343,5 @@ input.form-control {
 }
 
 .fs-24 {
-    font-size: 24px;
+    font-size: calc(24px * var(--a11y-text-scale, 1));
 }

@@ -22,7 +22,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 12px;
     color: #fff;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     outline: none;
     box-sizing: border-box;
 }
@@ -84,12 +84,12 @@
     align-items: center;
     justify-content: center;
     color: var(--color-accent-light);
-    font-size: 18px;
+    font-size: calc(18px * var(--a11y-text-scale, 1));
 }
 
 .product-card .pc-name {
     color: #fff;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     font-weight: 600;
     line-height: 1.3;
     flex: 1;
@@ -97,13 +97,13 @@
 
 .product-card .pc-price {
     color: var(--color-success);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     font-weight: 700;
 }
 
 .product-card .pc-stock {
     color: rgba(255,255,255,0.35);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
 }
 
 /* ── DERECHA ── */
@@ -125,7 +125,7 @@
 
 .pos-cart-header h6 {
     color: rgba(255,255,255,0.5);
-    font-size: 11px;
+    font-size: calc(11px * var(--a11y-text-scale, 1));
     letter-spacing: 1px;
     text-transform: uppercase;
     margin: 0;
@@ -157,7 +157,7 @@
 .cart-item-name {
     flex: 1;
     color: #fff;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     line-height: 1.3;
 }
 
@@ -168,14 +168,14 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     color: #fff;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     text-align: center;
     outline: none;
 }
 
 .cart-item-price {
     color: #34d399;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     font-weight: 700;
     min-width: 60px;
     text-align: right;
@@ -188,7 +188,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     color: #fff;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     text-align: center;
     outline: none;
 }
@@ -204,7 +204,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     transition: background 0.2s;
 }
 
@@ -216,11 +216,11 @@
     padding: 40px 20px;
     text-align: center;
     color: rgba(255,255,255,0.25);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .cart-empty i {
-    font-size: 30px;
+    font-size: calc(30px * var(--a11y-text-scale, 1));
     display: block;
     margin-bottom: 8px;
 }
@@ -242,12 +242,12 @@
 
 .pos-footer-label {
     color: rgba(255,255,255,0.45);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
 }
 
 .pos-footer-value {
     color: rgba(255,255,255,0.8);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     font-weight: 600;
 }
 
@@ -256,7 +256,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     color: #fff;
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     padding: 6px 10px;
     outline: none;
     width: 100%;
@@ -267,7 +267,7 @@
     align-items: center;
     gap: 8px;
     color: rgba(255,255,255,0.6);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
     cursor: pointer;
 }
 
@@ -278,12 +278,12 @@
 
 .igv-row .pos-footer-label {
     color: rgba(255,255,255,0.4);
-    font-size: 12px;
+    font-size: calc(12px * var(--a11y-text-scale, 1));
 }
 
 .igv-row .pos-footer-value {
     color: rgba(255,255,255,0.6);
-    font-size: 13px;
+    font-size: calc(13px * var(--a11y-text-scale, 1));
 }
 
 .btn-pagar {
@@ -293,7 +293,7 @@
     border: none;
     border-radius: 12px;
     color: #fff;
-    font-size: 15px;
+    font-size: calc(15px * var(--a11y-text-scale, 1));
     font-weight: 700;
     letter-spacing: 0.5px;
     cursor: pointer;
@@ -383,13 +383,13 @@
 .pos-modal-title {
     color: var(--color-text);
     font-weight: 700;
-    font-size: 20px;
+    font-size: calc(20px * var(--a11y-text-scale, 1));
     margin-bottom: 10px;
 }
 
 .pos-modal-text {
     color: rgba(255,255,255,0.45);
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     margin-bottom: 30px;
     line-height: 1.6;
 }
@@ -398,6 +398,6 @@
     display: inline-block;
     width: 100%;
     padding: 13px;
-    font-size: 14px;
+    font-size: calc(14px * var(--a11y-text-scale, 1));
     text-decoration: none;
 }
