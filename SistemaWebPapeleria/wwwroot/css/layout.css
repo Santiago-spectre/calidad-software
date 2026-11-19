@@ -70,12 +70,12 @@ body {
 }
 
     .menu-item:hover {
-        background: rgba(99,102,241,0.1);
+        background: rgba(var(--color-primary-rgb),0.1);
         color: var(--color-text);
     }
 
     .menu-item.active {
-        background: rgba(99,102,241,0.2);
+        background: rgba(var(--color-primary-rgb),0.2);
         color: var(--color-text);
         border-left: 3px solid var(--color-primary);
     }
@@ -119,8 +119,8 @@ body {
 }
 
     .logout-btn:hover {
-        background: rgba(255,80,80,0.1);
-        color: #ff5050;
+        background: rgba(var(--a11y-danger-rgb),0.1);
+        color: var(--color-danger);
     }
 
 .main-content {
@@ -245,12 +245,12 @@ select {
 }
 
 .bell-dropdown::-webkit-scrollbar-thumb {
-    background: rgba(99,102,241,0.4);
+    background: rgba(var(--color-primary-rgb),0.4);
     border-radius: 10px;
 }
 
     .bell-dropdown::-webkit-scrollbar-thumb:hover {
-        background: rgba(99,102,241,0.6);
+        background: rgba(var(--color-primary-rgb),0.6);
     }
 
 .bell-dropdown-header span {
@@ -289,7 +289,7 @@ select {
 }
 
 .notif-item.unread {
-    background: rgba(99,102,241,0.07);
+    background: rgba(var(--color-primary-rgb),0.07);
 }
 
 .notif-item p.title {
@@ -376,7 +376,7 @@ select {
 }
 
 .notif-item--danger {
-    color: #ff5050;
+    color: var(--color-danger);
 }
 
 .icon-mr-sm {

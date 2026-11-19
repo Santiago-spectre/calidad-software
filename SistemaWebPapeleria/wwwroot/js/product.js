@@ -35,8 +35,8 @@ function renderPaginacion(total) {
     let paginacion = document.getElementById('paginacion');
     paginacion.innerHTML = '';
     if (totalPaginas <= 1) return;
-    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: 13px; cursor: pointer;';
-    const btnActiveStyle = 'background: rgba(99,102,241,0.4); border: 1px solid #6366f1; border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: 13px; cursor: pointer; font-weight: 700;';
+    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: calc(13px * var(--a11y-text-scale, 1)); cursor: pointer;';
+    const btnActiveStyle = 'background: rgba(var(--color-primary-rgb),0.4); border: 1px solid var(--color-primary); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: calc(13px * var(--a11y-text-scale, 1)); cursor: pointer; font-weight: 700;';
 
     const btnAnterior = document.createElement('button');
     btnAnterior.textContent = '‹';
@@ -87,8 +87,8 @@ function renderPaginacionCats(total) {
     cont.innerHTML = '';
     if (totalPaginas <= 1) return;
 
-    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 4px 10px; font-size: 12px; cursor: pointer;';
-    const btnActiveStyle = 'background: rgba(99,102,241,0.4); border: 1px solid #6366f1; border-radius: 8px; color: #ffffff; padding: 4px 10px; font-size: 12px; cursor: pointer; font-weight: 700;';
+    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 4px 10px; font-size: calc(12px * var(--a11y-text-scale, 1)); cursor: pointer;';
+    const btnActiveStyle = 'background: rgba(var(--color-primary-rgb),0.4); border: 1px solid var(--color-primary); border-radius: 8px; color: #ffffff; padding: 4px 10px; font-size: calc(12px * var(--a11y-text-scale, 1)); cursor: pointer; font-weight: 700;';
 
     const btnAnt = document.createElement('button');
     btnAnt.textContent = '‹';

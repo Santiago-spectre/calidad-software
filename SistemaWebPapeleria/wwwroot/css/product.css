@@ -148,7 +148,7 @@
 }
 
 .btn-icon-xs--accent { background: rgba(var(--color-primary-rgb), 0.15); color: var(--color-primary); }
-.btn-icon-xs--danger { background: rgba(248, 113, 113, 0.15); color: var(--color-danger); }
+.btn-icon-xs--danger { background: rgba(var(--a11y-danger-rgb), 0.15); color: var(--color-danger); }
 
 .pagination-row-wrap {
     display: flex;

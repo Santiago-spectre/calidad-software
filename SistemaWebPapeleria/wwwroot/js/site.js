@@ -7,18 +7,18 @@ function csrfHeader() {
 function showToast(mensaje, tipo = 'success') {
     const container = document.getElementById('toastContainer');
     const colores = {
-        success: { bg: 'rgba(52,211,153,0.15)', border: 'rgba(52,211,153,0.3)', color: '#34d399', icon: 'bi-check-circle-fill' },
-        error: { bg: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.3)', color: '#f87171', icon: 'bi-x-circle-fill' },
-        warning: { bg: 'rgba(251,191,36,0.15)', border: 'rgba(251,191,36,0.3)', color: '#fbbf24', icon: 'bi-exclamation-triangle-fill' },
-        info: { bg: 'rgba(99,102,241,0.15)', border: 'rgba(99,102,241,0.3)', color: '#818cf8', icon: 'bi-info-circle-fill' },
+        success: { bg: 'rgba(var(--a11y-positive-rgb),0.15)', border: 'rgba(var(--a11y-positive-rgb),0.3)', color: 'var(--color-success)', icon: 'bi-check-circle-fill' },
+        error: { bg: 'rgba(var(--a11y-danger-rgb),0.15)', border: 'rgba(var(--a11y-danger-rgb),0.3)', color: 'var(--color-danger)', icon: 'bi-x-circle-fill' },
+        warning: { bg: 'rgba(var(--a11y-warning-rgb),0.15)', border: 'rgba(var(--a11y-warning-rgb),0.3)', color: 'var(--color-warning)', icon: 'bi-exclamation-triangle-fill' },
+        info: { bg: 'rgba(var(--color-primary-rgb),0.15)', border: 'rgba(var(--color-primary-rgb),0.3)', color: 'var(--color-primary)', icon: 'bi-info-circle-fill' },
     };
     const c = colores[tipo] || colores.success;
     const toast = document.createElement('div');
     toast.style.cssText = `background: ${c.bg}; border: 1px solid ${c.border}; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; min-width: 280px; max-width: 380px; backdrop-filter: blur(10px); animation: slideIn 0.3s ease;`;
     toast.innerHTML = `
-        <i class="bi ${c.icon}" style="color: ${c.color}; font-size: 18px; flex-shrink: 0;"></i>
-        <span style="color: #ffffff; font-size: 13px; flex: 1;">${mensaje}</span>
-        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 16px; padding: 0; line-height: 1;">×</button>
+        <i class="bi ${c.icon}" style="color: ${c.color}; font-size: calc(18px * var(--a11y-text-scale, 1)); flex-shrink: 0;"></i>
+        <span style="color: #ffffff; font-size: calc(13px * var(--a11y-text-scale, 1)); flex: 1;">${mensaje}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: calc(16px * var(--a11y-text-scale, 1)); padding: 0; line-height: 1;">×</button>
     `;
     container.appendChild(toast);
     setTimeout(() => { if (toast.parentElement) toast.remove(); }, 4000);
@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     const esExito = tipo === 'success';
-    const color = esExito ? '#34d399' : '#f87171';
-    const bg = esExito ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
+    const color = esExito ? 'var(--color-success)' : 'var(--color-danger)';
+    const bg = esExito ? 'rgba(var(--a11y-positive-rgb),0.15)' : 'rgba(var(--a11y-danger-rgb),0.15)';
     const icono = esExito ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
 
     const div = document.createElement('div');
-    div.style.cssText = `background: ${bg}; border: 1px solid ${color}; color: ${color}; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 13px;`;
+    div.style.cssText = `background: ${bg}; border: 1px solid ${color}; color: ${color}; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; font-size: calc(13px * var(--a11y-text-scale, 1));`;
     div.innerHTML = `<i class="bi ${icono}"></i> ${message}`;
     container.prepend(div);
 

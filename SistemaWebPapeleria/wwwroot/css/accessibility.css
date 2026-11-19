@@ -27,6 +27,10 @@
     bottom: 84px;
     z-index: 1100;
     width: min(360px, calc(100vw - 32px));
+    box-sizing: border-box;
+    max-height: calc(100vh - 100px);
+    max-height: calc(100dvh - 100px);
+    overflow-y: auto;
     padding: 20px;
     border: 1px solid var(--color-border);
     border-radius: 16px;
@@ -120,11 +124,230 @@ html {
 }
 
     html.a11y-text-large {
-        font-size: 112.5%;
         --a11y-text-scale: 1.125;
     }
 
     html.a11y-text-larger {
-        font-size: 125%;
         --a11y-text-scale: 1.25;
     }
+
+/* Tokens for accessible status colors and dashboard charts. */
+:root {
+    --a11y-positive-rgb: 52, 211, 153;
+    --a11y-warning-rgb: 251, 191, 36;
+    --a11y-danger-rgb: 248, 113, 113;
+    --a11y-muted-text: rgba(255, 255, 255, 0.6);
+    --a11y-chart-primary: #6366f1;
+    --a11y-chart-primary-fill: rgba(99, 102, 241, 0.5);
+    --a11y-chart-success: #34d399;
+    --a11y-chart-success-fill: rgba(52, 211, 153, 0.15);
+    --a11y-chart-warning: #fbbf24;
+    --a11y-chart-warning-fill: rgba(251, 191, 36, 0.15);
+    --a11y-chart-payment-cash: #fbbf24;
+    --a11y-chart-payment-yape: #34d399;
+    --a11y-chart-payment-plin: #60a5fa;
+    --a11y-chart-payment-card: #6366f1;
+    --a11y-chart-text: rgba(255, 255, 255, 0.6);
+    --a11y-chart-ticks: rgba(255, 255, 255, 0.5);
+    --a11y-chart-grid: rgba(255, 255, 255, 0.05);
+}
+
+html[data-a11y-color-vision="safe"] {
+    --color-primary: #56b4e9;
+    --color-primary-rgb: 86, 180, 233;
+    --color-primary-dark: #0072b2;
+    --color-accent-light: #9bdcfb;
+    --color-success: #56b4e9;
+    --color-success-dark: #0072b2;
+    --color-danger: #e69f00;
+    --color-danger-dark: #d55e00;
+    --color-warning: #f0e442;
+    --a11y-positive-rgb: 86, 180, 233;
+    --a11y-warning-rgb: 230, 159, 0;
+    --a11y-danger-rgb: 213, 94, 0;
+    --a11y-chart-primary: #56b4e9;
+    --a11y-chart-primary-fill: rgba(86, 180, 233, 0.45);
+    --a11y-chart-success: #56b4e9;
+    --a11y-chart-success-fill: rgba(86, 180, 233, 0.2);
+    --a11y-chart-warning: #e69f00;
+    --a11y-chart-warning-fill: rgba(230, 159, 0, 0.2);
+    --a11y-chart-payment-cash: #e69f00;
+    --a11y-chart-payment-yape: #56b4e9;
+    --a11y-chart-payment-plin: #009e73;
+    --a11y-chart-payment-card: #cc79a7;
+}
+
+html[data-a11y-contrast="high"] {
+    --color-bg-dark: #000;
+    --color-bg-mid: #000;
+    --color-bg-light: #111;
+    --color-text: #fff;
+    --color-text-muted: #fff;
+    --color-border: rgba(255, 255, 255, 0.9);
+    --a11y-muted-text: #fff;
+    --a11y-chart-text: #fff;
+    --a11y-chart-ticks: #fff;
+    --a11y-chart-grid: rgba(255, 255, 255, 0.35);
+}
+
+html[data-a11y-contrast="high"] body {
+    background-color: #000 !important;
+    background-image: none !important;
+    color: #fff !important;
+}
+
+html[data-a11y-contrast="high"] :is(.sidebar, .main-content, .topbar, .card, .modal-card, .bell-dropdown, .stat-card, .stat-card-body, .accessibility-panel, .accessibility-group, .data-table, .table-responsive) {
+    background-color: #000 !important;
+    background-image: none !important;
+    border-color: #fff !important;
+    box-shadow: none !important;
+}
+
+html[data-a11y-contrast="high"] body :is(p, span, small, label, td, th, h1, h2, h3, h4, h5, h6, .menu-item, .topbar-usuario, .text-muted-11, .text-muted-13, .text-muted-13-light, .dropdown-loading-text) {
+    color: #fff !important;
+}
+
+html[data-a11y-contrast="high"] :is(input, select, textarea) {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+html[data-a11y-contrast="high"] :is(a, button, .btn):focus-visible {
+    outline: 3px solid #f0e442 !important;
+    outline-offset: 3px;
+}
+
+html[data-a11y-contrast="high"] body :is(a, button) {
+    color: #fff !important;
+}
+
+html[data-a11y-contrast="high"] #toastContainer > div,
+html[data-a11y-contrast="high"] #flashBannerContainer > div {
+    background: #000 !important;
+    border: 2px solid #fff !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+html[data-a11y-contrast="high"] :is(#toastContainer, #flashBannerContainer) :is(i, span, button) {
+    color: #fff !important;
+}
+
+html[data-a11y-contrast="high"] :is(.btn-gradient-cta, .btn-gradient-success, .btn-gradient-danger, .btn-primary) {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+}
+
+html[data-a11y-color-vision="safe"] :is(.pill-badge--success, .btn-icon-action--success, .alert-toast-success) {
+    background-color: rgba(var(--a11y-positive-rgb), 0.2) !important;
+    border: 1px solid var(--color-success) !important;
+    color: var(--color-success) !important;
+}
+
+html[data-a11y-color-vision="safe"] :is(.pill-badge--danger, .btn-icon-action--danger, .alert-toast-error) {
+    background-color: rgba(var(--a11y-danger-rgb), 0.2) !important;
+    border: 1px solid var(--color-danger) !important;
+    color: var(--color-danger) !important;
+}
+
+html[data-a11y-color-vision="safe"] :is(.pill-badge--warning, .btn-icon-action--warning) {
+    background-color: rgba(var(--a11y-warning-rgb), 0.2) !important;
+    border: 1px solid var(--color-warning) !important;
+    color: var(--color-warning) !important;
+}
+
+.accessibility-toggle {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.accessibility-toggle input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: var(--color-primary);
+}
+
+.accessibility-help {
+    margin: 4px 0 12px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.accessibility-speech-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.accessibility-speech-button {
+    flex: 1;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+    background: var(--color-bg-dark);
+    color: var(--color-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.accessibility-speech-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.accessibility-speech-button:not(:disabled):hover {
+    background: var(--color-bg-light);
+}
+
+html[data-a11y-contrast="high"] .accessibility-speech-button {
+    border: 2px solid #fff;
+    background: #000;
+    color: #fff;
+}
+
+html[data-a11y-focus="on"] *,
+html[data-a11y-focus="on"] *::before,
+html[data-a11y-focus="on"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    text-shadow: none !important;
+    transition-duration: 0.01ms !important;
+}
+
+html[data-a11y-focus="on"] body {
+    background-color: var(--color-bg-dark);
+    background-image: none !important;
+    color: var(--color-text) !important;
+}
+
+html[data-a11y-focus="on"] :is(.card, .stat-card, .modal-card, .accessibility-panel, .sidebar, .topbar, .data-table) {
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+html[data-a11y-focus="on"] :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-primary) !important;
+    outline-offset: 3px;
+}
+
+html[data-a11y-dyslexia="on"] body {
+    font-family: Arial, Verdana, sans-serif !important;
+}
+
+html[data-a11y-dyslexia="on"] :is(p, li, td, th, label, input, textarea, select, a, button:not(.input-icon-toggle):not(.btn-icon-action):not(.btn-icon-xs):not(.modal-close-btn):not(.modal-x-btn):not(.toast-denied-close):not(#btnCerrarAccesibilidad):not(.btn-close)) {
+    letter-spacing: 0.035em;
+    line-height: 1.7;
+}
+
+html[data-a11y-dyslexia="on"] :is(p, li, td, th) {
+    text-align: left;
+}

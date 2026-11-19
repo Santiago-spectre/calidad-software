@@ -19,7 +19,7 @@ let productosFiltrados = productos.filter(p => p.isActive);
 function renderGrid(lista) {
     const grid = document.getElementById('posGrid');
     if (lista.length === 0) {
-        grid.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px;grid-column:1/-1;text-align:center;padding:40px 0;">No se encontraron productos</div>';
+        grid.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size: calc(13px * var(--a11y-text-scale, 1));grid-column:1/-1;text-align:center;padding:40px 0;">No se encontraron productos</div>';
         renderPaginacion(0);
         return;
     }
@@ -45,8 +45,8 @@ function renderPaginacion(total) {
     cont.innerHTML = '';
     if (totalPaginas <= 1) return;
 
-    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: 13px; cursor: pointer;';
-    const btnActiveStyle = 'background: rgba(99,102,241,0.4); border: 1px solid #6366f1; border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: 13px; cursor: pointer; font-weight: 700;';
+    const btnStyle = 'background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: calc(13px * var(--a11y-text-scale, 1)); cursor: pointer;';
+    const btnActiveStyle = 'background: rgba(var(--color-primary-rgb),0.4); border: 1px solid var(--color-primary); border-radius: 8px; color: #ffffff; padding: 5px 11px; font-size: calc(13px * var(--a11y-text-scale, 1)); cursor: pointer; font-weight: 700;';
 
     // Anterior
     const btnAnt = document.createElement('button');
@@ -62,7 +62,7 @@ function renderPaginacion(total) {
             if (i === 6) {
                 const pts = document.createElement('span');
                 pts.textContent = '...';
-                pts.style.cssText = 'color: rgba(255,255,255,0.4); font-size: 13px; padding: 0 4px;';
+                pts.style.cssText = 'color: rgba(255,255,255,0.4); font-size: calc(13px * var(--a11y-text-scale, 1)); padding: 0 4px;';
                 cont.appendChild(pts);
             }
             continue;

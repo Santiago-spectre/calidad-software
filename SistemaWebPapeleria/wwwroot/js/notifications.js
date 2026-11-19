@@ -46,7 +46,7 @@ async function cargarNotificaciones() {
 
         const lista = document.getElementById('notifList');
         if (data.notificaciones.length === 0) {
-            lista.innerHTML = '<p style="color: rgba(255,255,255,0.3); font-size: 12px; text-align: center; padding: 25px;">No tienes notificaciones</p>';
+            lista.innerHTML = '<p style="color: rgba(255,255,255,0.3); font-size: calc(12px * var(--a11y-text-scale, 1)); text-align: center; padding: 25px;">No tienes notificaciones</p>';
             return;
         }
         lista.innerHTML = data.notificaciones.map(n => `
@@ -56,7 +56,7 @@ async function cargarNotificaciones() {
                     <p class="msg">${n.message}</p>
                     <p class="time">${tiempoRelativo(n.createdAt)}</p>
                 </div>
-                <button onclick="eliminarNotificacion(${n.notificationId}, this)" style="background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 14px; padding: 4px; flex-shrink: 0;">
+                <button onclick="eliminarNotificacion(${n.notificationId}, this)" style="background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: calc(14px * var(--a11y-text-scale, 1)); padding: 4px; flex-shrink: 0;">
                     <i class="bi bi-trash-fill"></i>
                 </button>
             </div>

@@ -24,6 +24,49 @@
     <p>Personaliza la presentación y el uso del sistema.</p>
 
     <fieldset class="accessibility-group">
+        <legend>Lectura accesible</legend>
+        <label class="accessibility-toggle" for="accessibilityDyslexiaMode">
+            <input type="checkbox" id="accessibilityDyslexiaMode" aria-describedby="accessibilityDyslexiaModeHelp" />
+            <span>Formato de lectura para dislexia</span>
+        </label>
+        <p id="accessibilityDyslexiaModeHelp" class="accessibility-help">Usa una fuente sans serif y ajusta el espaciado para facilitar la lectura.</p>
+    </fieldset>
+
+    <fieldset class="accessibility-group">
+        <legend>Concentración</legend>
+        <label class="accessibility-toggle" for="accessibilityFocusMode">
+            <input type="checkbox" id="accessibilityFocusMode" aria-describedby="accessibilityFocusModeHelp" />
+            <span>Modo de concentración</span>
+        </label>
+        <p id="accessibilityFocusModeHelp" class="accessibility-help">Reduce animaciones y efectos decorativos para ayudar a mantener la atención.</p>
+    </fieldset>
+
+    <fieldset class="accessibility-group">
+        <legend>Narración con voz</legend>
+        <label for="accessibilitySpeechRate">Velocidad de lectura</label>
+        <select id="accessibilitySpeechRate" class="accessibility-control">
+            <option value="0.8">Lenta</option>
+            <option value="1" selected>Normal</option>
+            <option value="1.2">Rápida</option>
+        </select>
+        <div class="accessibility-speech-actions">
+            <button type="button" id="accessibilityReadPage" class="accessibility-speech-button">Leer contenido</button>
+            <button type="button" id="accessibilityStopReading" class="accessibility-speech-button" disabled>Detener</button>
+        </div>
+        <p id="accessibilitySpeechStatus" class="accessibility-help" aria-live="polite" role="status"></p>
+    </fieldset>
+
+    <fieldset class="accessibility-group">
+        <legend>Idioma</legend>
+        <label for="accessibilityLanguage">Idioma de la interfaz</label>
+        <select id="accessibilityLanguage" class="accessibility-control" aria-describedby="accessibilityLanguageHelp">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+        </select>
+        <p id="accessibilityLanguageHelp" class="accessibility-help">Cambia el idioma de los textos de la interfaz.</p>
+    </fieldset>
+
+    <fieldset class="accessibility-group">
         <legend>Lectura</legend>
 
         <label for="accessibilityTextSize">Tamaño del texto</label>
@@ -32,5 +75,21 @@
             <option value="large">Grande</option>
             <option value="larger">Muy grande</option>
         </select>
+    </fieldset>
+
+    <fieldset class="accessibility-group">
+        <legend>Visión y color</legend>
+
+        <label class="accessibility-toggle" for="accessibilityColorVision">
+            <input type="checkbox" id="accessibilityColorVision" aria-describedby="accessibilityColorVisionHelp" />
+            <span>Paleta diferenciada para daltonismo</span>
+        </label>
+        <p id="accessibilityColorVisionHelp" class="accessibility-help">Los gráficos y estados usan colores distinguibles y conservan sus etiquetas.</p>
+
+        <label class="accessibility-toggle" for="accessibilityHighContrast">
+            <input type="checkbox" id="accessibilityHighContrast" aria-describedby="accessibilityHighContrastHelp" />
+            <span>Alto contraste</span>
+        </label>
+        <p id="accessibilityHighContrastHelp" class="accessibility-help">Aumenta el contraste de fondos, texto, bordes y controles.</p>
     </fieldset>
 </section>

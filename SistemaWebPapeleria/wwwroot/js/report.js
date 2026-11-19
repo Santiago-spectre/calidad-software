@@ -71,13 +71,13 @@ async function verDetalle(saleId) {
 
     document.getElementById('modalItems').innerHTML = data.items.map(i => `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-            <td style="color:#ffffff;font-size:13px;padding:12px 15px;">${i.producto}</td>
-            <td style="color:rgba(255,255,255,0.6);font-size:13px;padding:12px 15px;text-align:center;">
+            <td style="color:#ffffff;font-size: calc(13px * var(--a11y-text-scale, 1));padding:12px 15px;">${i.producto}</td>
+            <td style="color:rgba(255,255,255,0.6);font-size: calc(13px * var(--a11y-text-scale, 1));padding:12px 15px;text-align:center;">
                 ${i.cantidad}
-                ${i.devuelto > 0 ? `<br><span style="color:#f87171;font-size:11px;">(${i.devuelto} devuelto${i.devuelto > 1 ? 's' : ''})</span>` : ''}
+                ${i.devuelto > 0 ? `<br><span style="color:var(--color-danger);font-size: calc(11px * var(--a11y-text-scale, 1));">(${i.devuelto} devuelto${i.devuelto > 1 ? 's' : ''})</span>` : ''}
             </td>
-            <td style="color:rgba(255,255,255,0.6);font-size:13px;padding:12px 15px;text-align:right;">S/ ${i.precioUnitario.toFixed(2)}</td>
-            <td style="color:#34d399;font-size:13px;font-weight:700;padding:12px 15px;text-align:right;">S/ ${i.subtotal.toFixed(2)}</td>
+            <td style="color:rgba(255,255,255,0.6);font-size: calc(13px * var(--a11y-text-scale, 1));padding:12px 15px;text-align:right;">S/ ${i.precioUnitario.toFixed(2)}</td>
+            <td style="color:var(--color-success);font-size: calc(13px * var(--a11y-text-scale, 1));font-weight:700;padding:12px 15px;text-align:right;">S/ ${i.subtotal.toFixed(2)}</td>
         </tr>
     `).join('');
 
@@ -106,13 +106,13 @@ async function abrirDevolucion(saleId) {
 
     document.getElementById('devItems').innerHTML = data.items.map((i, index) => `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-            <td style="color:#ffffff;font-size:13px;padding:12px 15px;">${i.producto}</td>
-            <td style="color:rgba(255,255,255,0.6);font-size:13px;padding:12px 15px;text-align:center;">
-                ${i.disponibleDevolucion} disponible${i.devuelto > 0 ? `<br><span style="color:rgba(255,255,255,0.3);font-size:11px;">(${i.devuelto} ya devuelto)</span>` : ''}
+            <td style="color:#ffffff;font-size: calc(13px * var(--a11y-text-scale, 1));padding:12px 15px;">${i.producto}</td>
+            <td style="color:rgba(255,255,255,0.6);font-size: calc(13px * var(--a11y-text-scale, 1));padding:12px 15px;text-align:center;">
+                ${i.disponibleDevolucion} disponible${i.devuelto > 0 ? `<br><span style="color:rgba(255,255,255,0.3);font-size: calc(11px * var(--a11y-text-scale, 1));">(${i.devuelto} ya devuelto)</span>` : ''}
             </td>
             <td style="padding:12px 15px;text-align:center;">
                 <input type="number" id="devCantidad_${index}" min="0" max="${i.disponibleDevolucion}" value="0"
-                       style="width:60px;padding:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;text-align:center;outline:none;" />
+                       style="width:60px;padding:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size: calc(13px * var(--a11y-text-scale, 1));text-align:center;outline:none;" />
             </td>
         </tr>
     `).join('');
