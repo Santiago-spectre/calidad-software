@@ -20,6 +20,7 @@ builder.Services.AddAntiforgery(options =>
     options.HeaderName = "X-CSRF-TOKEN";    //nombre del header que van a usar los fetch() para mandar el token 
 });
 
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -50,8 +51,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseSession();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();

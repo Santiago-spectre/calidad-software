@@ -30,7 +30,7 @@
             <div class="stat-card-body">
                 <div>
                     <p class="stat-label">Total Productos</p>
-                    <h3 class="stat-value text-white-c">@Model.TotalProducts</h3>
+                    <p class="stat-value text-white-c">@Model.TotalProducts</p>
                 </div>
                 <div class="icon-box icon-box--accent">
                     <i class="bi bi-box-seam-fill stat-icon text-accent"></i>
@@ -43,7 +43,7 @@
         <div class="stat-card-body">
             <div>
                 <p class="stat-label">Total Ventas</p>
-                <h3 class="stat-value text-white-c">@Model.TotalSales</h3>
+                <p class="stat-value text-white-c">@Model.TotalSales</p>
             </div>
             <div class="icon-box icon-box--success">
                 <i class="bi bi-cart-fill stat-icon text-success-c"></i>
@@ -57,7 +57,7 @@
             <div class="stat-card-body">
                 <div>
                     <p class="stat-label">Total Usuarios</p>
-                    <h3 class="stat-value text-white-c">@Model.TotalUsers</h3>
+                    <p class="stat-value text-white-c">@Model.TotalUsers</p>
                 </div>
                 <div class="icon-box icon-box--warning">
                     <i class="bi bi-person-fill stat-icon text-warning-c"></i>
@@ -70,7 +70,7 @@
         <div class="stat-card-body">
             <div>
                 <p class="stat-label">Ventas del Día</p>
-                <h3 class="stat-value text-white-c">S/ @Model.TodaySales</h3>
+                <p class="stat-value text-white-c">S/ @Model.TodaySales</p>
             </div>
             <div class="icon-box icon-box--danger">
                 <i class="bi bi-currency-dollar stat-icon text-danger-c"></i>
@@ -82,7 +82,7 @@
         <div class="stat-card-body">
             <div>
                 <p class="stat-label">Ganancia Neta del Día</p>
-                <h3 class="stat-value text-success-c">S/ @Model.TodayNetProfit.ToString("0.00")</h3>
+                <p class="stat-value text-success-c">S/ @Model.TodayNetProfit.ToString("0.00")</p>
                 <p class="text-muted-11-alt mt-6">
                     @Model.TodayReturnsCount devuelto@(Model.TodayReturnsCount == 1 ? "" : "s") · S/ @Model.TodayReturnsAmount.ToString("0.00") devueltos
                 </p>
@@ -99,17 +99,17 @@
 
     <!-- Grafica de barras - Ventas ultima semana -->
     <div class="data-panel">
-        <h5 class="panel-title mb-20">
+        <h2 class="panel-title mb-20">
             <i class="bi bi-bar-chart-fill icon-accent-mr"></i> Ventas de la última semana
-        </h5>
+        </h2>
         <canvas id="chartSemana" class="chart-canvas"></canvas>
     </div>
 
     <!-- Grafica de dona - Ventas por metodo de pago -->
     <div class="data-panel">
-        <h5 class="panel-title mb-20">
+        <h2 class="panel-title mb-20">
             <i class="bi bi-pie-chart-fill icon-accent-mr"></i> Ventas por método de pago
-        </h5>
+        </h2>
         <canvas id="chartPago" class="chart-canvas"></canvas>
     </div>
 
@@ -118,9 +118,9 @@
 <!-- GRAFICA GANANCIA VS INVERTIDO -->
 <div class="data-panel mb-30">
     <div class="section-header">
-        <h5 class="panel-title m-0">
+        <h2 class="panel-title m-0">
             <i class="bi bi-graph-up-arrow icon-accent-mr"></i> Ganancia vs. Invertido (última semana)
-        </h5>
+        </h2>
         <span id="gananciaNetaBadge" class="ganancia-neta-badge @(Model.WeekGanancia.Sum() >= 0 ? "pill-badge--success" : "pill-badge--danger")">
             Neto: S/ @Model.WeekGanancia.Sum().ToString("0.00")
         </span>
@@ -133,9 +133,9 @@
 
     <!-- Productos con stock bajo -->
     <div class="data-panel">
-        <h5 class="panel-title mb-15">
+        <h2 class="panel-title mb-15">
             <i class="bi bi-exclamation-triangle-fill text-danger-c icon-mr-sm"></i> Stock bajo
-        </h5>
+        </h2>
         @if (Model.LowStockProducts.Count == 0)
         {
             <p class="empty-list-text">Sin alertas de stock</p>
@@ -156,9 +156,9 @@
     {
         <!-- Top 5 productos mas vendidos -->
         <div class="data-panel">
-            <h5 class="panel-title mb-15">
+            <h2 class="panel-title mb-15">
                 <i class="bi bi-trophy-fill text-warning-c icon-mr-sm"></i> Top 5 más vendidos
-            </h5>
+            </h2>
             @if (Model.TopProducts.Count == 0)
             {
                 <p class="empty-list-text">Sin datos aún</p>
@@ -181,9 +181,9 @@
 
     <!-- Resumen metodo de pago -->
     <div class="data-panel">
-        <h5 class="panel-title mb-15">
+        <h2 class="panel-title mb-15">
             <i class="bi bi-cash-coin text-success-c icon-mr-sm"></i> Resumen de pagos
-        </h5>
+        </h2>
         <div class="stack-gap-12">
             <div class="flex-between">
                 <span class="text-muted-13">Efectivo</span>
@@ -208,10 +208,11 @@
 
 <!-- TABLA ULTIMAS VENTAS -->
 <div class="data-panel">
-    <h5 class="panel-title mb-20">
+    <h2 class="panel-title mb-20">
         <i class="bi bi-clock-history icon-accent-mr"></i> Últimas Ventas
-    </h5>
+    </h2>
     <table class="data-table">
+        <caption class="visually-hidden">Ventas recientes</caption>
         <thead>
             <tr>
                 <th>ID</th>
@@ -281,12 +282,12 @@
             @if (TempData["Bienvenida"].ToString() == "Administrador")
             {
                 <i class="bi bi-shield-check modal-welcome-icon text-accent"></i>
-                <h4 class="modal-welcome-title">¡Bienvenido, Administrador!</h4>
+                <h2 class="modal-welcome-title">¡Bienvenido, Administrador!</h2>
             }
             else
             {
                 <i class="bi bi-cart-check modal-welcome-icon text-success-c"></i>
-                <h4 class="modal-welcome-title">¡Bienvenido, Vendedor!</h4>
+                <h2 class="modal-welcome-title">¡Bienvenido, Vendedor!</h2>
             }
             <p class="modal-welcome-name">@Model.UserName</p>
             <button onclick="document.getElementById('modalBienvenida').style.display='none'" class="modal-welcome-btn">
