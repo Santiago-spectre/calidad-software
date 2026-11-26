@@ -79,11 +79,11 @@
         'abierta': 'Open', 'cerrada': 'Closed', 'sin abrir': 'Not opened', 'historial de caja': 'Cash register history',
         'no hay registros de caja': 'No cash register records', 'abrir caja': 'Open cash register',
         'editar monto inicial': 'Edit opening amount', 'nuevo monto inicial (s/)': 'New opening amount (S/)',
-        'total productos': 'Total products', 'total ventas': 'Total sales', 'total usuarios': 'Total users',
+        'total productos': 'Total products', 'total usuarios': 'Total users',
         'ventas del día': "Today's sales", 'ganancia neta del día': "Today's net profit",
         'sin alertas de stock': 'No stock alerts', 'sin datos aún': 'No data yet', 'unid.': 'units',
-        'efectivo': 'Cash', 'tarjeta': 'Card', 'método de pago': 'Payment method', 'método de pago': 'Payment method',
-        'fecha': 'Date', 'id': 'ID', 'total': 'Total', 'método de pago': 'Payment method',
+        'efectivo': 'Cash', 'tarjeta': 'Card', 'método de pago': 'Payment method',
+        'fecha': 'Date', 'id': 'ID', 'total': 'Total',
         'con comprobante': 'With receipt', 'sin comprobante': 'Without receipt',
         'gestión de inventario': 'Inventory management', 'stock bajo': 'Low stock', 'agotados': 'Out of stock',
         'buscar producto': 'Search products', 'buscar producto...': 'Search products...',
@@ -103,22 +103,22 @@
         'comprobante': 'Receipt', 'emitido': 'Issued', 'no generada': 'Not generated',
         'informes de ventas mensuales': 'Monthly sales reports', 'generar informes de ventas por mes': 'Generate monthly sales reports',
         'no hay informes disponibles aún': 'No reports available yet', 'detalle de venta': 'Sale details',
-        'producto': 'Product', 'cantidad': 'Quantity', 'p. unit.': 'Unit price', 'subtotal': 'Subtotal',
+        'cantidad': 'Quantity', 'p. unit.': 'Unit price', 'subtotal': 'Subtotal',
         'selecciona los productos y la cantidad a devolver:': 'Select the products and quantity to return:',
         'vendido': 'Sold', 'a devolver': 'To return', 'motivo (opcional)': 'Reason (optional)',
         'ventas de hoy': "Today's sales", 'ventas totales mensuales': 'Total monthly sales', 'promedio de ventas': 'Average sales',
         'venta actual': 'Current sale', 'descuento (s/)': 'Discount (S/)', 'op. gravada': 'Taxable amount',
         'igv (18%)': 'VAT (18%)', 'pagar': 'Pay', 'caja no aperturada': 'Cash register not opened',
         'gestión de proveedores': 'Supplier management', 'teléfono': 'Phone', 'dirección': 'Address',
-        'agregar proveedor': 'Add supplier', 'nombre del proveedor': 'Supplier name', 'descripción (opcional)': 'Description (optional)',
+        'agregar proveedor': 'Add supplier', 'nombre del proveedor': 'Supplier name',
         'editar proveedor': 'Edit supplier', 'gestión de usuarios': 'User management', 'rol': 'Role',
         'no hay usuarios registrados': 'No users registered', 'agregar usuario': 'Add user', 'contraseña': 'Password',
         'seleccionar rol': 'Select role', 'editar usuario': 'Edit user', 'algo salió mal': 'Something went wrong',
-        'agregar categoría': 'Add category', 'editar servicio': 'Edit service', 'agregar proveedor': 'Add supplier',
-        'editar producto': 'Edit product', 'editar usuario': 'Edit user', 'editar': 'Edit', 'guardar': 'Save',
-        'cerrar': 'Close', 'buscar...': 'Search...', 'todos': 'All', 'todos los vendedores': 'All sellers',
+        'agregar categoría': 'Add category', 'editar servicio': 'Edit service',
+        'editar': 'Edit', 'guardar': 'Save',
+        'cerrar': 'Close', 'buscar...': 'Search...', 'todos': 'All',
         '¿eliminar esta categoría?': 'Delete this category?', '¿eliminar este proveedor?': 'Delete this supplier?',
-        '¿eliminar este usuario?': 'Delete this user?', 'administrador': 'Administrator', 'vendedor': 'Seller',
+        '¿eliminar este usuario?': 'Delete this user?', 'administrador': 'Administrator',
         'iniciar sesión': 'Sign in', 'sistema integral de gestión comercial': 'Integrated business management system',
         'iniciar sesión - papelería sonia': 'Sign in - Papelería Sonia',
         'recuperar contraseña - papelería sonia': 'Recover password - Papelería Sonia',
@@ -129,7 +129,7 @@
         'lectura accesible': 'Reading support', 'formato de lectura para dislexia': 'Dyslexia friendly reading format',
         'usa una fuente sans serif y ajusta el espaciado para facilitar la lectura.': 'Uses a sans serif font and adjusts spacing to make reading easier.',
         'gestión de ventas': 'Sales management', 'control de stock': 'Stock control', 'reportes en tiempo real': 'Real-time reports',
-        'gestión de caja': 'Cash management', 'bienvenido a papelería sonia': 'Welcome to Papelería Sonia',
+        'bienvenido a papelería sonia': 'Welcome to Papelería Sonia',
         'ingrese su correo electrónico y contraseña para iniciar sesión en su cuenta.': 'Enter your email and password to sign in to your account.',
         'correo electrónico': 'Email address', 'ingrese su correo': 'Enter your email', 'ingrese su contraseña': 'Enter your password',
         'mostrar u ocultar contraseña': 'Show or hide password', '¿has olvidado tu contraseña?': 'Forgot your password?',
@@ -151,11 +151,30 @@
         Object.entries(spanishToEnglish).map(([spanish, english]) => [normalizeTranslationKey(english), spanish])
     );
 
+    function splitOuterWhitespace(value) {
+        let start = 0;
+        let end = value.length;
+
+        while (start < end && /\s/.test(value[start])) {
+            start++;
+        }
+
+        while (end > start && /\s/.test(value[end - 1])) {
+            end--;
+        }
+
+        return [
+            value.slice(0, start),
+            value.slice(start, end),
+            value.slice(end)
+        ];
+    }
+
     function translateTextNode(node, language) {
         if (!originalText.has(node)) originalText.set(node, node.nodeValue);
         const original = originalText.get(node);
         if (language === 'es') {
-            const match = original.match(/^(\s*)([\s\S]*?)(\s*)$/);
+            const match = splitOuterWhitespace(original);
             const key = normalizeTranslationKey(match[2]);
             const spanishText = Object.prototype.hasOwnProperty.call(spanishToEnglish, key)
                 ? match[2]
@@ -163,7 +182,7 @@
             node.nodeValue = match[1] + spanishText + match[3];
             return;
         }
-        const match = original.match(/^(\s*)([\s\S]*?)(\s*)$/);
+        const match = splitOuterWhitespace(original);
         const key = normalizeTranslationKey(match[2]);
         node.nodeValue = match[1] + (spanishToEnglish[key] || match[2]) + match[3];
     }
