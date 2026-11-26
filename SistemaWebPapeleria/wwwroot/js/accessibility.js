@@ -172,19 +172,22 @@
 
     function translateTextNode(node, language) {
         if (!originalText.has(node)) originalText.set(node, node.nodeValue);
+
         const original = originalText.get(node);
+        const [leading, content, trailing] = splitOuterWhitespace(original);
+        const key = normalizeTranslationKey(content);
+
         if (language === 'es') {
-            const match = splitOuterWhitespace(original);
-            const key = normalizeTranslationKey(match[2]);
             const spanishText = Object.prototype.hasOwnProperty.call(spanishToEnglish, key)
-                ? match[2]
-                : englishToSpanish[key] || match[2];
-            node.nodeValue = match[1] + spanishText + match[3];
+                ? content
+                : englishToSpanish[key] || content;
+
+            node.nodeValue = leading + spanishText + trailing;
             return;
         }
-        const match = splitOuterWhitespace(original);
-        const key = normalizeTranslationKey(match[2]);
-        node.nodeValue = match[1] + (spanishToEnglish[key] || match[2]) + match[3];
+
+        const englishText = spanishToEnglish[key] || content;
+        node.nodeValue = leading + englishText + trailing;
     }
 
     function translateElementAttributes(element, language) {
